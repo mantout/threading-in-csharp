@@ -1,7 +1,7 @@
 ﻿body
 {
 	margin: 0;
-	padding-left: 21em;
+	padding: 0;
 	line-height: 1.2;
 	color: black;
 	background: white;
@@ -26,6 +26,8 @@ div#main
 	padding-top: 0.5em;
 	padding-bottom: 0.5em;
 	padding-right: 3em;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 div#navbar
@@ -391,6 +393,8 @@ table.toc
 {
 	border:none;
 	margin-top:6pt;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 td.toc, td.tocactive, th.toc, th.tocactive
