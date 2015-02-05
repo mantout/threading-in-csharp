@@ -1,1 +1,4 @@
-说明文档
+﻿说明文档
+2015-02-05
+1、从http://www.albahari.com/threading/网站copy了源文件，包括css、js、html及png。
+2、翻译了part1。
