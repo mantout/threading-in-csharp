@@ -507,6 +507,7 @@ static void Main()
 <p>The easiest way to pass arguments to a thread’s target
 method is to execute a lambda expression that calls the method with the desired
 arguments:</p>
+<p>向线程的目标方法传递参数最简单的方法是通过 lambda 表达式将需要的参数传递给线程的目标方法。</p>
 
 <pre class="sh_csharp">
 static void Main()
@@ -524,6 +525,7 @@ static void Print (string message)
 <p>With this approach, you can pass in any number of
 arguments to the method. You can even wrap the entire implementation in a multi-statement
 lambda:</p>
+<p>采用这种方法，你可以向目标方法传递任意数目的参数，甚至可以在 lambda 表达式中用多行代码将整个业务封闭起来。</p>
 
 <pre class="sh_csharp">
 new Thread (() =&gt;
@@ -535,6 +537,7 @@ new Thread (() =&gt;
 
 <p>You can do the same thing almost as easily in C# 2.0 with
 anonymous methods:</p>
+<p>在 C# 2.0 中用匿名方法也可以达到同样的效果：</p>
 
 <pre class="sh_csharp">
 new Thread (<b>delegate()</b>
@@ -544,6 +547,7 @@ new Thread (<b>delegate()</b>
 </pre>
 
 <p>Another technique is to pass an argument into <code>Thread</code>’s <code>Start</code> method:</p>
+<p>另一个技巧是向 <code>Thread</code> 类的 <code>Start</code> 方法传递参数：</p>
 
 <pre class="sh_csharp">
 static void Main()
@@ -554,13 +558,15 @@ static void Main()
  
 static void Print (object messageObj)
 {
-  string message = (string) messageObj;   // We need to cast here
+  string message = (string) messageObj;   // We need to cast here | 这里需要类型转换
   Console.WriteLine (message);
 }
 </pre>
 
 <p>This works because <code>Thread</code>’s
 constructor is overloaded to accept either of two delegates:</p>
+
+<p>这样做能奏效是因为 <code>Thread</code> 类的构造函数经过重载，能接受这两种代理：</p>
 
 <pre class="sh_csharp">
 public delegate void ThreadStart();
@@ -569,6 +575,7 @@ public delegate void ParameterizedThreadStart (object obj);
 
 <p>The limitation of <code>ParameterizedThreadStart</code>
 is that it accepts only one argument. And because it’s of type <code>object</code>, it usually needs to be cast.</p>
+<p><code>ParameterizedThreadStart</code> 有一个局限，它只能接受一个参数。参数是 <code>object</code> 类型的，还需要类型转换。</p>
 
 <h3>Lambda expressions and captured variables</h3>
 
@@ -576,6 +583,7 @@ is that it accepts only one argument. And because it’s of type <code>object</c
 pass data to a thread. However, you must be careful about accidentally
 modifying <em>captured variables</em> after starting the thread, because these
 variables are shared. For instance, consider the following:</p>
+<p>我们知道，lambda 表达式是一种非常强大的向线程传递数据的方法。不过你得小心，<em>传入变量</em>在线程启动后可能会意外地被修改，原因在于这些变量是为所有线程共享的。</p>
 
 <pre class="sh_csharp">
 for (int i = 0; i &lt; 10; i++)
@@ -583,7 +591,7 @@ for (int i = 0; i &lt; 10; i++)
 </pre>
 
 <p>The output is nondeterministic! Here’s a typical result:</p>
-
+<p>输出是不确定的！典型的输出如下：</p>
 <pre class="output">
 0223557799
 </pre>
@@ -592,14 +600,18 @@ for (int i = 0; i &lt; 10; i++)
 variable refers to the <em>same</em> memory location throughout the loop’s
 lifetime. Therefore, each thread calls <code>Console.Write</code>
 on a variable whose value may change as it is running!</p>
+<p>问题出在变量 <code>i</code> 在循环的生命周期内指向同一个内存地址，而每个线程调用 <code>Console.Write</code> 时输出一个随时在变的变量。</p>
 
-<p class="note">This is analogous to the problem we describe in “Captured
+<div class="note"><p>This is analogous to the problem we describe in “Captured
 Variables” in Chapter 8 of <a href="http://www.albahari.com/nutshell/">C# 4.0
 in a Nutshell</a>. The problem is less about multithreading and more about C#'s
 rules for capturing variables (which are somewhat undesirable in the case of <code>for</code> and <code>foreach</code> loops).</p>
+<p>这个问题与<a href="http://www.albahari.com/nutshell/">言简意赅话 C# 4.0</a> 一书的第 8 章“传入变量”中描述的问题有点类似，它更多的是 C#
+关于传入变量的规则，而不是多线程的问题（传入变量是 <code>for</code> 循环和 <code>foreach</code> 循环不想碰到的问题）。</p>
+</div>
 
 <p> The solution is to use a temporary variable as follows:</p>
-
+<p>增加一个临时变量就可以解决这个问题：</p>
 <pre class="sh_csharp">
 for (int i = 0; i &lt; 10; i++)
 {
@@ -612,6 +624,7 @@ for (int i = 0; i &lt; 10; i++)
 each loop iteration. Therefore, each thread captures a different memory
 location and there’s no problem. We can illustrate the problem in the earlier
 code more simply with the following example:</p>
+<p>对于每一次循环来说，变量 <code>temp</code> 都是局部变量，每一个线程接受的是不同的内存地址，这样就不会出错了。我们用之前的一个示例来简单重现一下这个错误，如下所示：</p>
 
 <pre class="sh_csharp">
 string text = "t1";
@@ -626,7 +639,7 @@ t2.Start();
 
 <p>Because both lambda expressions capture the same <code>text</code> variable, <code>t2</code> is printed
 twice:</p>
-
+<p>因为两个 lambda 表达式都接受了同一个 <code>text</code> 变量，<code>t2</code> 会打印两次：</p>
 <pre class="output">
 t2
 t2
