@@ -14,7 +14,7 @@
 <div id="main">
   <p class="title">C#中的线程</p>
   <p class="author">作者：Joseph Albahari</p>
-  <p class="author">翻译：chuwentao</p>
+  <p class="author">翻译：<a href="http://www.chuwentao.com">chuwentao</a></p>
   <div id="ctl00_toc">
   <table class="toc" border="0" cellspacing="0" cellpadding="0">
 	<tbody><tr>
@@ -28,7 +28,7 @@
 	  <td class="toc"><a class="toc" href="part2.html">线程同步基础</a></td>
 	  <td class="tocactive">使用多线程</td>
 	  <td class="toc"><a class="toc" href="part4.html">高级话题</a></td>
-	  <td class="toc"><a class="toc" href="part5.html">平行编程</a></td>
+	  <td class="toc"><a class="toc" href="part5.html">并行编程</a></td>
 	</tr></tbody>
   </table>
   </div>
@@ -36,7 +36,7 @@
 
 <h1>
 	<a name="_Event-Based_Asynchronous_Pattern">The Event-Based Asynchronous
-Pattern</a>
+Pattern | 基于事件的异步模式</a>
 </h1>
 
 <p>The event-based asynchronous pattern (EAP) provides a
@@ -46,7 +46,7 @@ features:</p>
 
 <ul>
 	<li>A cooperative cancellation model</li>
-	<li>The ability to <a href="part2.aspx#_Rich_Client_Applications">safely update
+	<li>The ability to <a href="part2.html#_Rich_Client_Applications">safely update
 WPF or Windows Forms controls</a> when the worker completes</li>
 	<li>Forwarding of exceptions to the completion event</li>
 </ul>
@@ -73,7 +73,7 @@ public bool <b>IsBusy</b> { get; }                  // Indicate
 <p>The <code>*Async</code> methods execute
 asynchronously: in other words, they start an operation on another thread and
 then return immediately to the caller. When the operation completes, the <span class="Replaceable">*</span><code>Completed</code> event fires — automatically
-calling <code>Invoke</code> if <a href="part2.aspx#_Rich_Client_Applications">required by a WPF or Windows Forms
+calling <code>Invoke</code> if <a href="part2.html#_Rich_Client_Applications">required by a WPF or Windows Forms
 application</a>. This event passes back an event arguments object that contains:</p>
 
 <ul>
@@ -124,13 +124,13 @@ threads, if its internal implementation follows the APM (this is described in
 Chapter 23 of <a href="http://www.albahari.com/nutshell/">C# 4.0 in a Nutshell</a>).
 </p>
 
-<p>We’ll see in Part 5 how <code><a href="part5.aspx#_Task_Parallelism">Tasks</a></code>
+<p>We’ll see in Part 5 how <code><a href="part5.html#_Task_Parallelism">Tasks</a></code>
 offer similar capabilities — including exception forwarding, continuations, cancellation
 tokens, and support for synchronization contexts. This makes <em>implementing</em>
 the EAP less attractive — except in simple cases where <code><a href="#_BackgroundWorker">BackgroundWorker</a></code> will do.</p>
 
 <h1>
-	<a name="_BackgroundWorker">BackgroundWorker</a>
+	<a name="_BackgroundWorker">BackgroundWorker | BackgroundWorker</a>
 </h1>
 
 <p>
@@ -142,7 +142,7 @@ following features:</p>
 
 <ul>
 	<li>A cooperative cancellation model</li>
-	<li>The ability to <a href="part2.aspx#_Rich_Client_Applications">safely update
+	<li>The ability to <a href="part2.html#_Rich_Client_Applications">safely update
 WPF or Windows Forms controls</a> when the worker completes</li>
 	<li>Forwarding of exceptions to the completion event</li>
 	<li>A protocol for reporting progress</li>
@@ -151,10 +151,10 @@ allowing it to be sited in Visual Studio’s designer</li>
 </ul>
 
 <p>
-	<code>BackgroundWorker</code> uses the <a href="./#_Thread_Pooling">thread pool</a>, which means you should never call <code><a href="part4.aspx#_Aborting_Threads">Abort</a></code> on a <code>BackgroundWorker</code> thread.</p>
+	<code>BackgroundWorker</code> uses the <a href="./#_Thread_Pooling">thread pool</a>, which means you should never call <code><a href="part4.html#_Aborting_Threads">Abort</a></code> on a <code>BackgroundWorker</code> thread.</p>
 
 <h2>
-	<a name="_Using_BackgroundWorker">Using BackgroundWorker</a>
+	<a name="_Using_BackgroundWorker">Using BackgroundWorker | 使用 BackgroundWorker</a>
 </h2>
 
 <p>Here are the minimum steps in using <code>BackgroundWorker</code>:</p>
@@ -305,7 +305,7 @@ You canceled!
 </pre>
 
 <h2>
-	<a name="_Subclassing_BackgroundWorker">Subclassing BackgroundWorker</a>
+	<a name="_Subclassing_BackgroundWorker">Subclassing BackgroundWorker | BackgroundWorker 子类化</a>
 </h2>
 
 <p class="note">Subclassing <code>BackgroundWorker</code> is an
@@ -383,10 +383,10 @@ canceled, is friendly with WPF and Windows Forms applications, and handles
 exceptions well.</p>
 
 <h1>
-	<a name="_Interrupt_and_Abort">Interrupt and Abort</a>
+	<a name="_Interrupt_and_Abort">Interrupt and Abort | 中断与终止</a>
 </h1>
 
-<p>All <a href="part2.aspx#_Blocking">blocking</a> methods (such as <code>Sleep</code>, <code>Join</code>, <code>EndInvoke</code>, and <code>Wait</code>) block
+<p>All <a href="part2.html#_Blocking">blocking</a> methods (such as <code>Sleep</code>, <code>Join</code>, <code>EndInvoke</code>, and <code>Wait</code>) block
 forever if the unblocking condition is never met and no timeout is specified.
 Occasionally, it can be useful to release a blocked thread prematurely; for
 instance, when ending an application. Two methods accomplish this:</p>
@@ -409,10 +409,10 @@ because they <em>seem</em> like obvious choices in solving a range of problems
 that it’s worth examining their pitfalls.</p>
 
 <h2>
-	<a name="_Interrupt">Interrupt</a>
+	<a name="_Interrupt">Interrupt | 中断</a>
 </h2>
 
-<p>Calling <code>Interrupt</code> on a <a href="part2.aspx#_Blocking">blocked</a> thread forcibly releases it, throwing a <code>ThreadInterruptedException</code>, as follows:</p>
+<p>Calling <code>Interrupt</code> on a <a href="part2.html#_Blocking">blocked</a> thread forcibly releases it, throwing a <code>ThreadInterruptedException</code>, as follows:</p>
 
 <pre class="sh_csharp">
 static void Main()
@@ -451,7 +451,7 @@ preemption between the <code>if</code> statement and <code>worker.Interrupt</cod
 <p>Interrupting a thread arbitrarily is dangerous, however,
 because any framework or third-party methods in the calling stack could
 unexpectedly receive the interrupt rather than your intended code. All it would
-take is for the thread to block briefly on a simple <a href="part2.aspx#_Locking">lock</a>
+take is for the thread to block briefly on a simple <a href="part2.html#_Locking">lock</a>
 or synchronization resource, and any pending interruption would kick in. If the
 method isn’t designed to be interrupted (with appropriate cleanup code in <code>finally</code> blocks), objects could be left in an unusable
 state or resources incompletely released.</p>
@@ -463,16 +463,16 @@ result more safely with a signaling construct — or Framework 4.0’s <a href="
 always more useful.</p>
 
 <h2>
-	<a name="_Abort">Abort</a>
+	<a name="_Abort">Abort | 终止</a>
 </h2>
 
-<p>A <a href="part2.aspx#_Blocking">blocked thread</a> can also be
+<p>A <a href="part2.html#_Blocking">blocked thread</a> can also be
 forcibly released via its <code>Abort</code> method. This has an
 effect similar to calling <code>Interrupt</code>, except that a <code>ThreadAbortException</code> is thrown instead of a <code>ThreadInterruptedException</code>. Furthermore, the exception
 will be rethrown at the end of the <code>catch</code> block (in
 an attempt to terminate the thread for good) unless <code>Thread.ResetAbort</code>
 is called within the <code>catch</code> block. In the interim,
-the thread has a <code><a href="part2.aspx#_ThreadState">ThreadState</a></code>
+the thread has a <code><a href="part2.html#_ThreadState">ThreadState</a></code>
 of <code>AbortRequested</code>.</p>
 
 <p class="note">An unhandled <code>ThreadAbortException</code>
@@ -489,7 +489,7 @@ unmanaged file handle will remain open until the application domain ends. This
 rules out using <code>Abort</code> in almost any nontrivial
 context.</p>
 
-<p class="note">For more detail on why Abort is unsafe, see <a href="part4.aspx#_Aborting_Threads">Aborting Threads</a> in Part 4.</p>
+<p class="note">For more detail on why Abort is unsafe, see <a href="part4.html#_Aborting_Threads">Aborting Threads</a> in Part 4.</p>
 
 <p>There are two cases, though, where you can safely use <code>Abort</code>. One is if you are willing to tear down a thread’s
 application domain after it is aborted. A good example of when you might do
@@ -503,7 +503,7 @@ aborting, it dismantles and re-creates the query’s application domain to avoid
 the potentially polluted state that could otherwise occur.</p>
 
 <h1>
-	<a name="_Safe_Cancellation">Safe Cancellation</a>
+	<a name="_Safe_Cancellation">Safe Cancellation | 安全取消</a>
 </h1>
 
 <p>As we saw in the preceding section, calling <code>Abort</code> on a thread is dangerous in most scenarios. The
@@ -597,7 +597,7 @@ object? In this instance, the answer is no, so it would be nice if this could
 be enforced in the type system. Framework 4.0 provides <i>cancellation tokens</i> for this exact purpose.</p>
 
 <h2>
-	<a name="_Cancellation_Tokens">Cancellation Tokens</a>
+	<a name="_Cancellation_Tokens">Cancellation Tokens | 取消标志</a>
 </h2>
 
 <p>Framework 4.0 provides two types that formalize the
@@ -649,7 +649,7 @@ copies behave identically and reference the original <code>CancellationTokenSour
 
 <p>The <code>CancellationToken</code> struct
 provides two additional useful members. The first is <code>WaitHandle</code>,
-which returns a <a href="part2.aspx#_Signaling_with_Event_Wait_Handles">wait handle</a> that’s
+which returns a <a href="part2.html#_Signaling_with_Event_Wait_Handles">wait handle</a> that’s
 signaled when the token is canceled. The second is <code>Register</code>,
 which lets you register a callback delegate that will be fired upon cancellation.</p>
 
@@ -659,24 +659,24 @@ itself, most notably in the following classes:</p>
 <ul>
 	<li>
 		<code>
-			<a href="part2.aspx#_ManualResetEvent">ManualResetEventSlim</a>
+			<a href="part2.html#_ManualResetEvent">ManualResetEventSlim</a>
 		</code>
-and <code><a href="part2.aspx#_Semaphore">SemaphoreSlim</a></code></li>
+and <code><a href="part2.html#_Semaphore">SemaphoreSlim</a></code></li>
 	<li>
 		<code>
-			<a href="part2.aspx#_CountdownEvent">CountdownEvent</a>
+			<a href="part2.html#_CountdownEvent">CountdownEvent</a>
 		</code>
 	</li>
 	<li>
 		<code>
-			<a href="part4.aspx#_The_Barrier_Class">Barrier</a>
+			<a href="part4.html#_The_Barrier_Class">Barrier</a>
 		</code>
 	</li>
 	<li>
 		<code>BlockingCollection</code>
 	</li>
 	<li>
-		<a href="part5.aspx#_PLINQ">PLINQ</a> and the <a href="part5.aspx#_The_Parallel_Class">Task
+		<a href="part5.html#_PLINQ">PLINQ</a> and the <a href="part5.html#_The_Parallel_Class">Task
 Parallel Library</a></li>
 </ul>
 
@@ -686,7 +686,7 @@ and specify a cancellation token, another thread can <code>Cancel</code>
 its wait. This is much tidier and safer than calling <code><a href="#_Interrupt">Interrupt</a></code> on the blocked thread.</p>
 
 <h1>
-	<a name="_Lazy_Initialization">Lazy Initialization</a>
+	<a name="_Lazy_Initialization">Lazy Initialization | 懒惰初始化</a>
 </h1>
 
 <p>A common problem in threading is how to lazily initialize
@@ -723,7 +723,7 @@ class Foo
 </pre>
 
 <p>The question then arises, is this thread-safe? Aside from
-the fact that we’re accessing <code>_expensive</code> outside a <a href="part2.aspx#_Locking">lock</a> without a <a href="part4.aspx#_Memory_Barriers_and_Volatility">memory
+the fact that we’re accessing <code>_expensive</code> outside a <a href="part2.html#_Locking">lock</a> without a <a href="part4.html#_Memory_Barriers_and_Volatility">memory
 barrier</a>, consider what would happen if two threads accessed this property
 at once. They could both satisfy the <code>if</code> statement’s
 predicate and each thread end up with a <em>different</em> instance of <code>Expensive</code>. As this may lead to subtle errors, we would
@@ -750,7 +750,7 @@ public Expensive Expensive
 </pre>
 
 <h2>
-	<a name="_LazyT">Lazy&lt;T&gt;</a>
+	<a name="_LazyT">Lazy&lt;T&gt; | Lazy&lt;T&gt;</a>
 </h2>
 
 <p>Framework 4.0 provides a new class called <code>Lazy&lt;T&gt;</code> to help with lazy initialization. If
@@ -760,8 +760,8 @@ the thread-safe initialization pattern just described.</p>
 <p class="note">
 	<code>Lazy&lt;T&gt;</code> actually implements a
 slightly more efficient version of this pattern, called <i>double-checked locking</i>. Double-checked locking
-performs an additional <a href="part4.aspx#_The_volatile_keyword">volatile read</a> to
-avoid the cost of obtaining a <a href="part2.aspx#_Locking">lock</a> if the object is
+performs an additional <a href="part4.html#_The_volatile_keyword">volatile read</a> to
+avoid the cost of obtaining a <a href="part2.html#_Locking">lock</a> if the object is
 already initialized.</p>
 
 <p>To use <code>Lazy&lt;T&gt;</code>,
@@ -782,7 +782,7 @@ this section — this makes sense when you want to use <code>Lazy&lt;T&gt;</code
 in a single-threaded context.</p>
 
 <h2>
-	<a name="_LazyInitializer">LazyInitializer</a>
+	<a name="_LazyInitializer">LazyInitializer | LazyInitializer</a>
 </h2>
 
 <p>
@@ -872,7 +872,7 @@ public Expensive Expensive
 </pre>
 
 <h1>
-	<a name="_Thread-Local_Storage">Thread-Local Storage</a>
+	<a name="_Thread-Local_Storage">Thread-Local Storage | 线程局部存储(TLS)</a>
 </h1>
 
 <p>Much of this article has focused on synchronization
@@ -890,7 +890,7 @@ Passing such data around in method parameters is extremely clumsy and alienates
 all but your own methods; storing such information in ordinary static fields
 means sharing it among all threads.</p>
 
-<p class="note">Thread-local storage can also be useful in <a href="part5.aspx#_Using_ThreadLocal">optimizing parallel code</a>. It allows
+<p class="note">Thread-local storage can also be useful in <a href="part5.html#_Using_ThreadLocal">optimizing parallel code</a>. It allows
 each thread to exclusively access its own version of a thread-unsafe object
 without needing locks — and without needing to reconstruct that object between
 method calls.</p>
@@ -898,7 +898,7 @@ method calls.</p>
 <p>There are three ways to implement thread-local storage.</p>
 
 <h2>
-	<a name="_ThreadStatic">[ThreadStatic]</a>
+	<a name="_ThreadStatic">[ThreadStatic] | [ThreadStatic]</a>
 </h2>
 
 <p>The easiest approach to thread-local storage is to mark a
@@ -918,7 +918,7 @@ instance fields — or start with a nondefault value — <code>ThreadLocal&lt;T&
 provides a better option.</p>
 
 <h2>
-	<a name="_ThreadLocalT">ThreadLocal&lt;T&gt;</a>
+	<a name="_ThreadLocalT">ThreadLocal&lt;T&gt; | ThreadLocal&lt;T&gt;</a>
 </h2>
 
 <p>
@@ -962,11 +962,11 @@ var localRandom = new ThreadLocal&lt;Random&gt;
  ( () =&gt; new Random (Guid.NewGuid().GetHashCode()) );
 </pre>
 
-<p>We’ll use this in Part 5 (see the <a href="part5.aspx#_Using_ThreadLocal">parallel spellchecking example</a> in
+<p>We’ll use this in Part 5 (see the <a href="part5.html#_Using_ThreadLocal">parallel spellchecking example</a> in
 “PLINQ”).</p>
 
 <h2>
-	<a name="_GetData_and_SetData">GetData and SetData</a>
+	<a name="_GetData_and_SetData">GetData and SetData | GetData 和 SetData</a>
 </h2>
 
 <p>The third approach is to use two methods in the <code>Thread</code> class: <code>GetData</code> and <code>SetData</code>. These store data in thread-specific “slots”. <code>Thread.GetData</code> reads from a thread’s isolated data store; <code>Thread.SetData</code> writes to it. Both methods require a <code>LocalDataStoreSlot</code> object to identify the slot. The same
@@ -1014,7 +1014,7 @@ appropriate <code>LocalDataStoreSlot</code> object while the slot
 is needed.</p>
 
 <h1>
-	<a name="_Timers">Timers</a>
+	<a name="_Timers">Timers | Timers 类</a>
 </h1>
 
 <p>If you need to execute some method repeatedly at regular
@@ -1064,7 +1064,7 @@ flexible; the single-threaded timers are safer and more convenient for running
 simple tasks that update Windows Forms controls or WPF elements.</p>
 
 <h2>
-	<a name="_Multithreaded_Timers">Multithreaded Timers</a>
+	<a name="_Multithreaded_Timers">Multithreaded Timers | 支持多线程的 Timers 类</a>
 </h2>
 
 <p>
@@ -1120,7 +1120,7 @@ methods in case you’re confused by <code>Enabled</code></li>
 	<li>An <code>AutoReset</code> flag for indicating a
 recurring event (default value is <code>true</code>)</li>
 	<li>A <code>SynchronizingObject</code> property with <code>Invoke</code> and <code>BeginInvoke</code> methods
-for <a href="part2.aspx#_Rich_Client_Applications">safely calling methods on WPF elements
+for <a href="part2.html#_Rich_Client_Applications">safely calling methods on WPF elements
 and Windows Forms controls</a></li>
 </ul>
 
@@ -1173,10 +1173,10 @@ on the Internet that use the multimedia timer by searching for the keywords <em>
 winmm.dll timesetevent</em>.</p>
 
 <h2>
-	<a name="_SingleThreaded_Timers">Single-Threaded Timers</a>
+	<a name="_SingleThreaded_Timers">Single-Threaded Timers | 支持单线程的 Timers 类</a>
 </h2>
 
-<p>The .NET Framework provides timers designed to eliminate <a href="part2.aspx#_Rich_Client_Applications">thread-safety issues for WPF and Windows
+<p>The .NET Framework provides timers designed to eliminate <a href="part2.html#_Rich_Client_Applications">thread-safety issues for WPF and Windows
 Forms applications</a>:</p>
 
 <ul>
@@ -1203,7 +1203,7 @@ normal application, is the same thread used to manage all user interface
 elements and controls. This has a number of benefits:</p>
 
 <ul>
-	<li>You can forget about <a href="part2.aspx#_Thread_Safety">thread safety</a>.</li>
+	<li>You can forget about <a href="part2.html#_Thread_Safety">thread safety</a>.</li>
 	<li>A fresh <code>Tick</code> will never fire until the
 previous <code>Tick</code> has finished processing.</li>
 	<li>You can update user interface elements and controls directly from

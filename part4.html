@@ -14,7 +14,7 @@
 <div id="main">
   <p class="title">C#中的线程</p>
   <p class="author">作者：Joseph Albahari</p>
-  <p class="author">翻译：chuwentao</p>
+  <p class="author">翻译：<a href="http://www.chuwentao.com">chuwentao</a></p>
   <div id="ctl00_toc">
   <table class="toc" border="0" cellspacing="0" cellpadding="0">
 	<tbody><tr>
@@ -28,20 +28,20 @@
 	  <td class="toc"><a class="toc" href="part2.html">线程同步基础</a></td>
 	  <td class="toc"><a class="toc" href="part3.html">使用多线程</a></td>
 	  <td class="tocactive">高级话题</td>
-	  <td class="toc"><a class="toc" href="part5.html">平行编程</a></td>
+	  <td class="toc"><a class="toc" href="part5.html">并行编程</a></td>
 	</tr></tbody>
   </table>
   </div>
-<p class="sectiontitle">Part 4: Advanced Threading</p>
+<p class="sectiontitle">Part 4: Advanced Threading | 高级话题</p>
 
 <h1>
-	<a name="_Nonblocking_Synchronization">Nonblocking Synchronization</a>
+	<a name="_Nonblocking_Synchronization">Nonblocking Synchronization | 非阻塞同步</a>
 </h1>
 
 <p>Earlier, we said that the need for synchronization arises
-even in the simple case of <a href="part2.aspx#_When_to_Lock">assigning or incrementing a
-field</a>. Although <a href="part2.aspx#_Locking">locking</a> can always satisfy this
-need, a contended lock means that a thread must <a href="part2.aspx#_Blocking">block</a>,
+even in the simple case of <a href="part2.html#_When_to_Lock">assigning or incrementing a
+field</a>. Although <a href="part2.html#_Locking">locking</a> can always satisfy this
+need, a contended lock means that a thread must <a href="part2.html#_Blocking">block</a>,
 suffering the overhead of a context switch and the latency of being descheduled,
 which can be undesirable in highly concurrent and performance-critical
 scenarios. The .NET Framework’s <i>nonblocking</i>
@@ -59,7 +59,7 @@ processes. An example of where this might be useful is in reading and writing
 process-shared memory.</p>
 
 <h2>
-	<a name="_Memory_Barriers_and_Volatility">Memory Barriers and Volatility</a>
+	<a name="_Memory_Barriers_and_Volatility">Memory Barriers and Volatility | 内存屏障(Memory Barriers)与易失字段</a>
 </h2>
 
 <p>Consider the following example: </p>
@@ -147,13 +147,13 @@ ran after A, reading <code>_complete</code> would evaluate to <code>true</code>.
 <div class="note">
 	<p>The following implicitly generate full fences:</p>
 	<ul>
-		<li>C#'s <code><a href="part2.aspx#_Locking">lock</a></code> statement (<code>Monitor.Enter</code>/<code>Monitor.Exit</code>)</li>
+		<li>C#'s <code><a href="part2.html#_Locking">lock</a></code> statement (<code>Monitor.Enter</code>/<code>Monitor.Exit</code>)</li>
 		<li>All methods on the <code><a href="#_Interlocked">Interlocked</a></code>
 class (we’ll cover these soon)</li>
-		<li>Asynchronous callbacks that use the thread pool — these include <a href="./#_Asynchronous_delegates">asynchronous delegates</a>, APM callbacks, and <code><a href="part5.aspx#_Continuations">Task
+		<li>Asynchronous callbacks that use the thread pool — these include <a href="./#_Asynchronous_delegates">asynchronous delegates</a>, APM callbacks, and <code><a href="part5.html#_Continuations">Task
 continuations</a></code></li>
-		<li>Setting and waiting on a <a href="part2.aspx#_Signaling_with_Event_Wait_Handles">signaling construct</a></li>
-		<li>Anything that relies on signaling, such as starting or waiting on a <code><a href="part5.aspx#_Task_Parallelism">Task</a></code></li>
+		<li>Setting and waiting on a <a href="part2.html#_Signaling_with_Event_Wait_Handles">signaling construct</a></li>
+		<li>Anything that relies on signaling, such as starting or waiting on a <code><a href="part5.html#_Task_Parallelism">Task</a></code></li>
 	</ul>
 	<p>By virtue of that last point, the following is thread-safe:</p>
 <pre class="sh_csharp">
@@ -200,7 +200,7 @@ away the ones that you don’t need. If you’re uncertain of any, leave them in
 Or better: switch back to using locks!</p>
 
 <div class="sidebar">
-<p class="sidebartitle">Do We Really Need Locks and Barriers?</p>
+<p class="sidebartitle">Do We Really Need Locks and Barriers? | 我们是否真的需要锁(Locks)与屏障(Barriers)？</p>
 
 <p>Working with <em>shared writable fields</em> without locks
 or fences is asking for trouble. There’s a lot of misleading information on
@@ -229,7 +229,7 @@ static void Main()
 </pre>
 
 <p>This program <em>never terminates</em> because the <code>complete</code> variable is cached in a CPU register. Inserting a
-call to <code>Thread.MemoryBarrier</code> inside the <code>while</code> loop (or <a href="part2.aspx#_Locking">locking</a> around
+call to <code>Thread.MemoryBarrier</code> inside the <code>while</code> loop (or <a href="part2.html#_Locking">locking</a> around
 reading <code>complete</code>) fixes the error.</p>
 
 </div>
@@ -339,7 +339,7 @@ write followed by a read <em>can</em> be reordered.</p>
 <p>This presents a strong case for avoiding <code>volatile</code>: even if you understand the subtlety in this
 example, will other developers working on your code also understand it? A full
 fence between each of the two assignments in <code>Test1</code>
-and <code>Test2</code> (or a <a href="part2.aspx#_Locking">lock</a>) solves
+and <code>Test2</code> (or a <a href="part2.html#_Locking">lock</a>) solves
 the problem.</p>
 
 <p>The <code>volatile</code> keyword is not
@@ -388,7 +388,7 @@ ignore a lock’s mutual exclusion guarantee, we could say that this:</p>
 </pre>
 
 <h2>
-	<a name="_Interlocked">Interlocked</a>
+	<a name="_Interlocked">Interlocked | Interlocked</a>
 </h2>
 
 <p>Use of <a href="#_Memory_Barriers_and_Volatility">memory barriers</a>
@@ -447,8 +447,8 @@ is possible whereby one thread preempts another in between retrieving <code>_x</
 (resulting in an out-of-date value being written).</p>
 
 <p>Of course, you can address these issues by wrapping the
-nonatomic operations in a <code><a href="part2.aspx#_Locking">lock</a></code>
-statement. Locking, in fact, <a href="part2.aspx#_Locking_and_Atomicity">simulates
+nonatomic operations in a <code><a href="part2.html#_Locking">lock</a></code>
+statement. Locking, in fact, <a href="part2.html#_Locking_and_Atomicity">simulates
 atomicity if consistently applied</a>. The <code>Interlocked</code>
 class, however, provides an easier and faster solution for such simple
 operations:</p>
@@ -491,7 +491,7 @@ fences — unless they’re accessed in other places in your program without <co
 operations are restricted to <code>Increment</code>, <code>Decrement</code>, and <code>Add</code>. If you want
 to multiply — or perform any other calculation — you can do so in lock-free style
 by using the <code>CompareExchange</code> method (typically in
-conjunction with spin-waiting). We give an example in <a href="part5.aspx#_SpinLock_and_SpinWait">the parallel programming section</a>.</p>
+conjunction with spin-waiting). We give an example in <a href="part5.html#_SpinLock_and_SpinWait">the parallel programming section</a>.</p>
 
 <p>
 	<code>Interlocked</code> works by making its
@@ -500,28 +500,28 @@ need for atomicity known to the operating system and virtual machine.</p>
 <p class="note">
 	<code>Interlocked</code>’s methods have a
 typical overhead of 10 ns — half that of an uncontended <code>lock</code>.
-Further, they can never suffer the additional cost of context switching due to <a href="part2.aspx#_Blocking">blocking</a>. The flip side is that using <code>Interlocked</code> within a loop with many iterations can be less
+Further, they can never suffer the additional cost of context switching due to <a href="part2.html#_Blocking">blocking</a>. The flip side is that using <code>Interlocked</code> within a loop with many iterations can be less
 efficient than obtaining a single lock <em>around</em> the loop (although <code>Interlocked</code> enables greater <em>concurrency</em>).</p>
 
 <h1>
-	<a name="_Signaling_with_Wait_and_Pulse">Signaling with Wait and Pulse</a>
+	<a name="_Signaling_with_Wait_and_Pulse">Signaling with Wait and Pulse | 使用 Wait 和 Pulse 发信号</a>
 </h1>
 
 
-<p>Earlier we discussed <a href="part2.aspx#_Signaling_with_Event_Wait_Handles">Event
+<p>Earlier we discussed <a href="part2.html#_Signaling_with_Event_Wait_Handles">Event
 Wait Handles</a> — a simple signaling mechanism where a thread blocks until it
 receives notification from another.</p>
 
 <p>A more powerful signaling construct is provided by the <code>Monitor</code> class, via the static methods <code>Wait</code>
 and <code>Pulse</code> (and <code>PulseAll</code>).
 The principle is that you write the signaling logic yourself using custom flags
-and fields (enclosed in <code><a href="part2.aspx#_Locking">lock</a></code>
-statements), and then introduce <code>Wait</code> and <code>Pulse</code> commands to prevent <a href="part2.aspx#_Blocking_Versus_Spinning">spinning</a>. With just these methods and the
-<code><a href="part2.aspx#_Locking">lock</a></code> statement, you can
-achieve the functionality of <code><a href="part2.aspx#_AutoResetEvent">AutoResetEvent</a></code>,
-<code><a href="part2.aspx#_ManualResetEvent">ManualResetEvent</a></code>,
-and <code><a href="part2.aspx#_Semaphore">Semaphore</a></code>, as well as
-(with some caveats) <code>WaitHandle</code>’s static methods <code><a href="part2.aspx#_WaitAny_WaitAll_SignalAndWait">WaitAll</a></code> and <code><a href="part2.aspx#_WaitAny_WaitAll_SignalAndWait">WaitAny</a></code>.
+and fields (enclosed in <code><a href="part2.html#_Locking">lock</a></code>
+statements), and then introduce <code>Wait</code> and <code>Pulse</code> commands to prevent <a href="part2.html#_Blocking_Versus_Spinning">spinning</a>. With just these methods and the
+<code><a href="part2.html#_Locking">lock</a></code> statement, you can
+achieve the functionality of <code><a href="part2.html#_AutoResetEvent">AutoResetEvent</a></code>,
+<code><a href="part2.html#_ManualResetEvent">ManualResetEvent</a></code>,
+and <code><a href="part2.html#_Semaphore">Semaphore</a></code>, as well as
+(with some caveats) <code>WaitHandle</code>’s static methods <code><a href="part2.html#_WaitAny_WaitAll_SignalAndWait">WaitAll</a></code> and <code><a href="part2.html#_WaitAny_WaitAll_SignalAndWait">WaitAny</a></code>.
 Furthermore, <code>Wait</code> and <code>Pulse</code>
 can be amenable in situations where all of the wait handles are parsimoniously
 challenged.</p>
@@ -556,7 +556,7 @@ implement the logic yourself using ordinary fields and variables. In practice,
 this is very simple and amounts purely to the cost of taking a <code>lock</code>. </p>
 
 <h2>
-	<a name="_How_to_Use_Wait_and_Pulse">How to Use Wait and Pulse</a>
+	<a name="_How_to_Use_Wait_and_Pulse">How to Use Wait and Pulse | 怎样使用 Wait 和 Pulse</a>
 </h2>
 
 <p>Here’s how to use <code>Wait</code> and <code>Pulse</code>:</p>
@@ -633,7 +633,7 @@ class SimpleWaitPulse
 <pre class="output">
 Woken!!!   <i>(after pressing Enter)</i></pre>
 
-<p>For <a href="part2.aspx#_Thread_Safety">thread safety</a>, we ensure
+<p>For <a href="part2.html#_Thread_Safety">thread safety</a>, we ensure
 that all shared fields are accessed within a lock. Hence, we add <code>lock</code> statements around both reading and updating the <code>_go</code> flag. This is essential (unless you’re willing to
 follow the <a href="#_Nonblocking_Synchronization">nonblocking synchronization</a>
 principles).</p>
@@ -689,7 +689,7 @@ conditions. In the <code>Work</code> method, this check is accomplished
 via the <code>while</code> loop. The <em>waiter</em> then decides
 whether to continue, <em>not the notifier</em>. If pulsing by itself is taken
 as instruction to continue, the <code>Wait</code> construct is
-stripped of any real value; you end up with an inferior version of an <code><a href="part2.aspx#_AutoResetEvent">AutoResetEvent</a></code>.</p>
+stripped of any real value; you end up with an inferior version of an <code><a href="part2.html#_AutoResetEvent">AutoResetEvent</a></code>.</p>
 
 <p>If we abandon our pattern, removing the <code>while</code> loop, the <code>_go</code> flag, and
 the <code>ReadLine</code>, we get a bare-bones <code>Wait</code>/<code>Pulse</code> example:</p>
@@ -710,23 +710,23 @@ static void Work()
 
 <p>It’s not possible to display the output, because it’s
 nondeterministic! A race ensues between the main thread and the worker. If <code>Wait</code> executes first, the signal works. If <code>Pulse</code> executes first, the <em>pulse is lost</em> and the
-worker remains forever stuck. This differs from the behavior of an <code><a href="part2.aspx#_AutoResetEvent">AutoResetEvent</a></code>, where its <code>Set</code> method has a memory or “latching” effect, so it is
+worker remains forever stuck. This differs from the behavior of an <code><a href="part2.html#_AutoResetEvent">AutoResetEvent</a></code>, where its <code>Set</code> method has a memory or “latching” effect, so it is
 still effective if called before <code>WaitOne</code>.</p>
 
 <p>
 	<code>Pulse</code> has no latching effect
 because you’re expected to write the latch yourself, using a “go” flag as we
 did before. This is what makes <code>Wait</code> and <code>Pulse</code> versatile: with a boolean flag, we can make it
-function as an <code><a href="part2.aspx#_AutoResetEvent">AutoResetEvent</a></code>;
-with an integer field, we can <a href="#_Writing_a_CountdownEvent">write a CountdownEvent</a> or a <code><a href="part2.aspx#_Semaphore">Semaphore</a></code>. With more
+function as an <code><a href="part2.html#_AutoResetEvent">AutoResetEvent</a></code>;
+with an integer field, we can <a href="#_Writing_a_CountdownEvent">write a CountdownEvent</a> or a <code><a href="part2.html#_Semaphore">Semaphore</a></code>. With more
 complex data structures, we can go further and write such constructs as a
 producer/consumer queue.</p>
 
 <h2>
-	<a name="_Wait_Pulse_Producer_Consumer_Queue">Producer/Consumer Queue</a>
+	<a name="_Wait_Pulse_Producer_Consumer_Queue">Producer/Consumer Queue | 生产者与消费者队列</a>
 </h2>
 
-<p>Earlier, we described the <a href="part2.aspx#_WaitHandle_Producer_Consumer_Queue">concept of a producer/consumer queue</a>,
+<p>Earlier, we described the <a href="part2.html#_WaitHandle_Producer_Consumer_Queue">concept of a producer/consumer queue</a>,
 and how to write one with an <code>AutoResetEvent</code>. We’re
 now going to write a more powerful version with <code>Wait</code>
 and <code>Pulse</code>.</p>
@@ -962,7 +962,7 @@ code is fine — providing they all execute quickly. Remember that you’re help
 awaiting a pulse!</p>
 
 <h2>
-	<a name="_Wait_Timeouts">Wait Timeouts</a>
+	<a name="_Wait_Timeouts">Wait Timeouts | Wait 超时</a>
 </h2>
 
 <p>You can specify a timeout when calling <code>Wait</code>, either in milliseconds or as a <code>TimeSpan</code>.
@@ -1018,7 +1018,7 @@ sometimes it can be useful to log this or throw an exception if the timeout was
 unexpected.</p>
 
 <div class="sidebar">
-<p class="sidebartitle">Waiting Queues</p>
+<p class="sidebartitle">Waiting Queues | Wait 队列</p>
 
 <p>When more than one thread <code>Wait</code>s
 upon the same object, a “waiting queue” forms behind the synchronizing object
@@ -1050,7 +1050,7 @@ fashion.</p>
 </div>
 
 <h2>
-	<a name="_TwoWay_Signaling_and_Races">Two-Way Signaling and Races</a>
+	<a name="_TwoWay_Signaling_and_Races">Two-Way Signaling and Races | 双向 Signaling 和 Races</a>
 </h2>
 
 <p>An important feature of <code>Monitor.Pulse</code>
@@ -1134,7 +1134,7 @@ at each iteration if the worker’s still busy with a previous task.</p>
 flag to the class, controlled by the worker. The main thread then waits until
 the worker’s ready before setting the <code>_go</code> flag.</p>
 
-<p class="note">This is analogous to <a href="part2.aspx#_Two-way_signaling">a previous
+<p class="note">This is analogous to <a href="part2.html#_Two-way_signaling">a previous
 example</a> that performed the same thing using two <code>AutoResetEvent</code>s,
 except more extensible.</p>
 
@@ -1188,7 +1188,7 @@ worker at the same time. Our logic is watertight in this scenario; in effect,
 we’re clearing <code>_ready</code> and setting <code>_go</code>, <em>atomically</em>.</p>
 
 <h2>
-	<a name="_Simulating_Wait_Handles">Simulating Wait Handles</a>
+	<a name="_Simulating_Wait_Handles">Simulating Wait Handles | 模拟 Wait Handles</a>
 </h2>
 
 <p>You might have noticed a pattern in the previous example:
@@ -1204,9 +1204,9 @@ lock (_locker)
 </pre>
 
 <p>where <code>_flag</code> is set to <code>true</code> in another thread. This is, in effect, mimicking an <code>AutoResetEvent</code>. If we omitted _<code>flag=false</code>,
-we’d then have the basis of a <code><a href="part2.aspx#_ManualResetEvent">ManualResetEvent</a></code>.</p>
+we’d then have the basis of a <code><a href="part2.html#_ManualResetEvent">ManualResetEvent</a></code>.</p>
 
-<p>Let’s flesh out the complete code for a <code><a href="part2.aspx#_ManualResetEvent">ManualResetEvent</a></code> using <code>Wait</code> and <code>Pulse</code>:</p>
+<p>Let’s flesh out the complete code for a <code><a href="part2.html#_ManualResetEvent">ManualResetEvent</a></code> using <code>Wait</code> and <code>Pulse</code>:</p>
 
 <pre class="sh_csharp">
 readonly object _locker = new object();
@@ -1231,7 +1231,7 @@ void Reset() { lock (_locker) _signal = false; }
 <p>We used <code>PulseAll</code> because there
 could be any number of blocked waiters. </p>
 
-<p>Writing an <code><a href="part2.aspx#_AutoResetEvent">AutoResetEvent</a></code>
+<p>Writing an <code><a href="part2.html#_AutoResetEvent">AutoResetEvent</a></code>
 is simply a matter of replacing the code in <code>WaitOne</code>
 with this:</p>
 
@@ -1254,10 +1254,10 @@ fairness in the queuing of backlogged waiters, because each call to <code>PulseA
 re-forming.</p>
 
 <p>Replacing <code>_signal</code> with an
-integer field would form the basis of a <code><a href="part2.aspx#_Semaphore">Semaphore</a></code>.</p>
+integer field would form the basis of a <code><a href="part2.html#_Semaphore">Semaphore</a></code>.</p>
 
 <p>Simulating the static methods that work across a set of
-wait handles is easy in simple scenarios. The equivalent of calling <code><a href="part2.aspx#_WaitAny_WaitAll_SignalAndWait">WaitAll</a></code> is nothing
+wait handles is easy in simple scenarios. The equivalent of calling <code><a href="part2.html#_WaitAny_WaitAll_SignalAndWait">WaitAll</a></code> is nothing
 more than a blocking condition that incorporates all the flags used in place of
 the wait handles:</p>
 
@@ -1268,7 +1268,7 @@ lock (_locker)
 </pre>
 
 <p>This can be particularly useful given that <code>WaitAll</code> is often unusable due to COM legacy issues.
-Simulating <code><a href="part2.aspx#_WaitAny_WaitAll_SignalAndWait">WaitAny</a></code>
+Simulating <code><a href="part2.html#_WaitAny_WaitAll_SignalAndWait">WaitAny</a></code>
 is simply a matter of replacing the <code>&amp;&amp;</code>
 operator with the <code>||</code> operator.</p>
 
@@ -1278,10 +1278,10 @@ for the signaling to work atomically. This is where wait handles have an
 advantage.</p>
 
 <h2>
-	<a name="_Writing_a_CountdownEvent">Writing a CountdownEvent</a>
+	<a name="_Writing_a_CountdownEvent">Writing a CountdownEvent | 编写 CountdownEvent 事件</a>
 </h2>
 
-<p>With <code>Wait</code> and <code>Pulse</code>, we can implement the essential functionality of a <a href="part2.aspx#_CountdownEvent">CountdownEvent</a> as follows:</p>
+<p>With <code>Wait</code> and <code>Pulse</code>, we can implement the essential functionality of a <a href="part2.html#_CountdownEvent">CountdownEvent</a> as follows:</p>
 
 <pre class="sh_csharp">
 public class Countdown
@@ -1316,11 +1316,11 @@ public class Countdown
 that our blocking condition is based on an integer field. </p>
 
 <h2>
-	<a name="_Thread_Rendezvous">Thread Rendezvous</a>
+	<a name="_Thread_Rendezvous">Thread Rendezvous | 线程重现</a>
 </h2>
 
 <p>We can use the <code>Countdown</code> class
-that we just wrote to rendezvous a pair of threads — as we did earlier with <a href="part2.aspx#_WaitAny_WaitAll_SignalAndWait">WaitHandle.SignalAndWait</a>:</p>
+that we just wrote to rendezvous a pair of threads — as we did earlier with <a href="part2.html#_WaitAny_WaitAll_SignalAndWait">WaitHandle.SignalAndWait</a>:</p>
 
 <pre class="sh_csharp">
 class Rendezvous
@@ -1369,7 +1369,7 @@ signaling constructs. To address this, Framework 4.0 provides a new class
 called <a href="#_The_Barrier_Class">Barrier</a>.</p>
 
 <h1>
-	<a name="_The_Barrier_Class">The Barrier Class</a>
+	<a name="_The_Barrier_Class">The Barrier Class | 屏障类</a>
 </h1>
 
 <p>The <code>Barrier</code> class is a
@@ -1388,7 +1388,7 @@ wants to rendezvous.</li>
 
 <p>Instantiating <code>Barrier</code> with a
 value of <code>3</code> causes <code>SignalAndWait</code>
-to <a href="part2.aspx#_Blocking">block</a> until that method has been called three
+to <a href="part2.html#_Blocking">block</a> until that method has been called three
 times. But unlike a <code>CountdownEvent</code>, it then automatically
 starts over: calling <code>SignalAndWait</code> again blocks
 until called another three times. This allows you to keep several threads “in
@@ -1450,14 +1450,14 @@ each of the worker threads. It doesn’t have to worry about preemption, because
 all workers are blocked while it does its thing.</p>
 
 <h1>
-	<a name="_Reader_Writer_Locks">Reader/Writer Locks</a>
+	<a name="_Reader_Writer_Locks">Reader/Writer Locks | 读/写锁操作</a>
 </h1>
 
 
 <p>Quite often, instances of a type are thread-safe for
 concurrent read operations, but not for concurrent updates (nor for a concurrent
 read and update). This can also be true with resources such as a file. Although
-protecting instances of such types with a simple <a href="part2.aspx#_Locking">exclusive
+protecting instances of such types with a simple <a href="part2.html#_Locking">exclusive
 lock</a> for all modes of access usually does the trick, it can unreasonably
 restrict concurrency if there are many readers and just occasional updates. An
 example of where this could occur is in a business application server, where
@@ -1469,7 +1469,7 @@ maximum-availability locking in just this scenario.</p>
 in Framework 3.5 and is a replacement for the older “fat” <code>ReaderWriterLock</code>
 class. The latter is similar in functionality, but it is several times slower
 and has an inherent design fault in its mechanism for handling lock upgrades.</p>
-	<p>When compared to an ordinary <code><a href="part2.aspx#_Locking">lock</a></code> (<code>Monitor.Enter</code>/<code>Exit</code>), <code>ReaderWriterLockSlim</code> is twice
+	<p>When compared to an ordinary <code><a href="part2.html#_Locking">lock</a></code> (<code>Monitor.Enter</code>/<code>Exit</code>), <code>ReaderWriterLockSlim</code> is twice
 as slow, though.</p>
 </div>
 
@@ -1481,7 +1481,7 @@ lock and a write lock:</p>
 	<li>A read lock is compatible with other read locks.</li>
 </ul>
 
-<p>So, a thread holding a write lock <a href="part2.aspx#_Blocking">blocks</a>
+<p>So, a thread holding a write lock <a href="part2.html#_Blocking">blocks</a>
 all other threads trying to obtain a read <em>or</em> write lock (and vice versa).
 But if no thread holds a write lock, any number of threads may concurrently
 obtain a read lock.</p>
@@ -1593,7 +1593,7 @@ public int  RecursiveWriteCount       { get; }
 </pre>
 
 <h2>
-	<a name="_Upgradeable_Locks_and_Recursion">Upgradeable Locks and Recursion</a>
+	<a name="_Upgradeable_Locks_and_Recursion">Upgradeable Locks and Recursion | 可升级锁与递归</a>
 </h2>
 
 <p>Sometimes it’s useful to swap a read lock for a write lock
@@ -1637,7 +1637,7 @@ releases your read lock and obtains a fresh write lock, atomically.</p>
 <p>There’s another important difference between upgradeable
 locks and read locks. While an upgradeable lock can coexist with any number of <em>read</em>
 locks, only one upgradeable lock can itself be taken out at a time. This
-prevents conversion <a href="part2.aspx#_Deadlocks">deadlocks</a> by <em>serializing</em>
+prevents conversion <a href="part2.html#_Deadlocks">deadlocks</a> by <em>serializing</em>
 competing conversions — just as update locks do in SQL Server:</p>
 
 <table border="1" cellspacing="0" cellpadding="0">
@@ -1728,15 +1728,15 @@ scale:</p>
 however, is always legal.</p>
 
 <h1>
-	<a name="_Suspend_and_Resume">Suspend and Resume</a>
+	<a name="_Suspend_and_Resume">Suspend and Resume | 暂停与继续</a>
 </h1>
 
 <p>A thread can be explicitly suspended and resumed via the deprecated methods <code>Thread.Suspend</code>
 and <code>Thread.Resume</code>. This mechanism is completely
-separate to that of <a href="part2.aspx#_Blocking">blocking</a>. Both systems are
+separate to that of <a href="part2.html#_Blocking">blocking</a>. Both systems are
 independent and operate in parallel.</p>
 
-<p>A thread can suspend itself or another thread. Calling <code>Suspend</code> results in the thread briefly entering the <code><a href="part2.aspx#_ThreadState">SuspendRequested state</a></code>, then upon reaching a point safe for
+<p>A thread can suspend itself or another thread. Calling <code>Suspend</code> results in the thread briefly entering the <code><a href="part2.html#_ThreadState">SuspendRequested state</a></code>, then upon reaching a point safe for
 garbage collection, it enters the <code>Suspended</code> state.
 From there, it can be resumed only via another thread that calls its <code>Resume</code> method. <code>Resume</code> will work
 only on a suspended thread, not a blocked thread.</p>
@@ -1744,7 +1744,7 @@ only on a suspended thread, not a blocked thread.</p>
 <p>From .NET 2.0, <code>Suspend</code> and <code>Resume</code> have been deprecated, their use discouraged because
 of the danger inherent in arbitrarily suspending another thread. If a thread
 holding a lock on a critical resource is suspended, the whole application (or
-computer) can deadlock. This is far more dangerous <a href="part3.aspx#_Abort">than
+computer) can deadlock. This is far more dangerous <a href="part3.html#_Abort">than
 calling Abort</a> — which results in any such locks being released (at least
 theoretically) by virtue of code in <code>finally</code> blocks.</p>
 
@@ -1770,13 +1770,13 @@ else
 <p>This is horribly thread-unsafe: the code could be
 preempted at any point in these five lines, during which the worker could march
 on in and change its state. While it can be worked around, the solution is more
-complex than the alternative — using a synchronization construct such as an <a href="part2.aspx#_AutoResetEvent">AutoResetEvent</a> or <a href="#_Signaling_with_Wait_and_Pulse">Wait
+complex than the alternative — using a synchronization construct such as an <a href="part2.html#_AutoResetEvent">AutoResetEvent</a> or <a href="#_Signaling_with_Wait_and_Pulse">Wait
 and Pulse</a>. This makes <code>Suspend</code> and <code>Resume</code> useless on all counts.</p>
 
 <p class="warning">The deprecated <code>Suspend</code> and <code>Resume</code> methods have two modes: dangerous and useless!</p>
 
 <h1>
-	<a name="_Aborting_Threads">Aborting Threads</a>
+	<a name="_Aborting_Threads">Aborting Threads | 终止线程</a>
 </h1>
 
 <p>You can end a thread forcibly via the <code>Abort</code>
@@ -1795,7 +1795,7 @@ class Abort
 }
 </pre>
 
-<p>The thread upon being aborted immediately <a href="part2.aspx#_ThreadState">enters the AbortRequested
+<p>The thread upon being aborted immediately <a href="part2.html#_ThreadState">enters the AbortRequested
 state</a>. If it then terminates as expected, it goes into the <code>Stopped</code> state. The caller can wait for this to happen by
 calling <code>Join</code>:</p>
 
@@ -1876,7 +1876,7 @@ catch (ThreadStateException) { suspendedThread.Resume(); }
 </pre>
 
 <h2>
-	<a name="_Complications_with_ThreadAbort">Complications with Thread.Abort</a>
+	<a name="_Complications_with_ThreadAbort">Complications with Thread.Abort | Thread.Abort 的副作用</a>
 </h2>
 
 <p>Assuming an aborted thread doesn't call <code>ResetAbort</code>, you might expect it to terminate fairly
@@ -1969,10 +1969,10 @@ abandoned, with no way of closing the underlying file handle.</p>
 
 <p>This raises the question on how to go about writing an
 abort-friendly method. The most common workaround is not to abort another
-thread at all — but to implement a cooperative cancellation pattern, <a href="part3.aspx#_Safe_Cancellation">as described previously</a>. </p>
+thread at all — but to implement a cooperative cancellation pattern, <a href="part3.html#_Safe_Cancellation">as described previously</a>. </p>
 
 <h2>
-	<a name="_Ending_Application_Domains">Ending Application Domains</a>
+	<a name="_Ending_Application_Domains">Ending Application Domains | 结束应用程序域</a>
 </h2>
 
 <p>Another way to implement an abort-friendly worker is by
@@ -2001,7 +2001,7 @@ context, for instance, running threads on separate application domains is of
 benefit.</p>
 
 <h2>
-	<a name="_Ending_Processes">Ending Processes</a>
+	<a name="_Ending_Processes">Ending Processes | 结束进程</a>
 </h2>
 
 <p>Another way in which a thread can end is when the parent

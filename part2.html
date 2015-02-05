@@ -14,7 +14,7 @@
 <div id="main">
   <p class="title">C#中的线程</p>
   <p class="author">作者：Joseph Albahari</p>
-  <p class="author">翻译：chuwentao</p>
+  <p class="author">翻译：<a href="http://www.chuwentao.com">chuwentao</a></p>
   <div id="ctl00_toc">
   <table class="toc" border="0" cellspacing="0" cellpadding="0">
 	<tbody><tr>
@@ -28,15 +28,15 @@
 	  <td class="tocactive">线程同步基础</td>
 	  <td class="toc"><a class="toc" href="part3.html">使用多线程</a></td>
 	  <td class="toc"><a class="toc" href="part4.html">高级话题</a></td>
-	  <td class="toc"><a class="toc" href="part5.html">平行编程</a></td>
+	  <td class="toc"><a class="toc" href="part5.html">并行编程</a></td>
 	</tr></tbody>
   </table>
   </div>
 
-<p class="sectiontitle">Part 2: Basic Synchronization</p>
+<p class="sectiontitle">Part 2: Basic Synchronization | 线程同步基础</p>
 
 <h1>
-	<a name="_Synchronization">Synchronization Essentials</a>
+	<a name="_Synchronization">Synchronization Essentials | 同步要领</a>
 </h1>
 
 <p>So far, we’ve described how to start a task on a thread,
@@ -63,20 +63,20 @@ activity or execute a section of code at a time. <em>Exclusive</em> locking
 constructs are most common — these allow just one thread in at a time, and allow
 competing threads to access common data without interfering with each other.
 The standard exclusive locking constructs are <code><a href="#_Locking">lock</a></code> (<code>Monitor.Enter</code>/<code>Monitor.Exit</code>), <code><a href="#_Mutex">Mutex</a></code>,
-and <a href="part5.aspx#_SpinLock_and_SpinWait">SpinLock</a>. The nonexclusive locking constructs
-are <code><a href="#_Semaphore">Semaphore</a></code>, <code><a href="#_Semaphore">SemaphoreSlim</a></code>, and the <a href="part4.aspx#_Reader_Writer_Locks">reader/writer locks</a>.</dd>
+and <a href="part5.html#_SpinLock_and_SpinWait">SpinLock</a>. The nonexclusive locking constructs
+are <code><a href="#_Semaphore">Semaphore</a></code>, <code><a href="#_Semaphore">SemaphoreSlim</a></code>, and the <a href="part4.html#_Reader_Writer_Locks">reader/writer locks</a>.</dd>
 	<dt>Signaling constructs</dt>
 	<dd>These allow a thread to pause until receiving a
 notification from another, avoiding the need for inefficient polling. There are
 two commonly used signaling devices: <a href="#_Signaling_with_Event_Wait_Handles">event
-wait handles</a> and <code>Monitor</code>’s <code><a href="part4.aspx#_Signaling_with_Wait_and_Pulse">Wait/Pulse</a></code>
-methods. Framework 4.0 introduces the <code><a href="#_CountdownEvent">CountdownEvent</a></code> and <code><a href="part4.aspx#_The_Barrier_Class">Barrier</a></code> classes.</dd>
+wait handles</a> and <code>Monitor</code>’s <code><a href="part4.html#_Signaling_with_Wait_and_Pulse">Wait/Pulse</a></code>
+methods. Framework 4.0 introduces the <code><a href="#_CountdownEvent">CountdownEvent</a></code> and <code><a href="part4.html#_The_Barrier_Class">Barrier</a></code> classes.</dd>
 	<dt>Nonblocking synchronization constructs</dt>
 	<dd>These protect access to a common field by calling upon
 processor primitives. The CLR and C# provide the following nonblocking
-constructs: <code><a href="part4.aspx#_Memory_Barriers_and_Volatility">Thread.MemoryBarrier, Thread.VolatileRead, Thread.VolatileWrite</a></code>, the
-<code><a href="part4.aspx#_The_volatile_keyword">volatile</a></code>
-keyword, and the <code><a href="part4.aspx#_Interlocked">Interlocked</a></code>
+constructs: <code><a href="part4.html#_Memory_Barriers_and_Volatility">Thread.MemoryBarrier, Thread.VolatileRead, Thread.VolatileWrite</a></code>, the
+<code><a href="part4.html#_The_volatile_keyword">volatile</a></code>
+keyword, and the <code><a href="part4.html#_Interlocked">Interlocked</a></code>
 class.</dd>
 </dl>
 
@@ -84,7 +84,7 @@ class.</dd>
 briefly examine this concept.</p>
 
 <h2>
-	<a name="_Blocking">Blocking</a>
+	<a name="_Blocking">Blocking | 阻塞</a>
 </h2>
 
 <p>A thread is deemed <em>blocked</em> when its execution is
@@ -111,15 +111,15 @@ power button doesn't count!):</p>
 <ul>
 	<li>by the blocking condition being satisfied</li>
 	<li>by the operation timing out (if a timeout is specified)</li>
-	<li>by being interrupted via <a href="part3.aspx#_Interrupt">Thread.Interrupt</a></li>
-	<li>by being aborted via <a href="part3.aspx#_Abort">Thread.Abort</a></li>
+	<li>by being interrupted via <a href="part3.html#_Interrupt">Thread.Interrupt</a></li>
+	<li>by being aborted via <a href="part3.html#_Abort">Thread.Abort</a></li>
 </ul>
 
 <p>A thread is not deemed blocked if its execution is paused
-via the (deprecated) <a href="part4.aspx#_Suspend_and_Resume">Suspend</a> method.</p>
+via the (deprecated) <a href="part4.html#_Suspend_and_Resume">Suspend</a> method.</p>
 
 <h2>
-	<a name="_Blocking_Versus_Spinning">Blocking Versus Spinning</a>
+	<a name="_Blocking_Versus_Spinning">Blocking Versus Spinning | 阻塞 VS 自旋</a>
 </h2>
 
 <p>Sometimes a thread must pause until a certain condition is
@@ -159,10 +159,10 @@ avoids this.</p>
 expect a condition to be satisfied soon (perhaps within a few microseconds)
 because it avoids the overhead and latency of a context switch. The .NET
 Framework provides special methods and classes to assist — these are covered
-<a href="part5.aspx#_SpinLock_and_SpinWait">in the parallel programming section</a>.</p>
+<a href="part5.html#_SpinLock_and_SpinWait">in the parallel programming section</a>.</p>
 
 <h2>
-	<a name="_ThreadState">ThreadState</a>
+	<a name="_ThreadState">ThreadState | 线程状态 ThreadState</a>
 </h2>
 
 <p>You can query a thread's execution status via its <code>ThreadState</code> property. This returns a flags enum of type <code>ThreadState</code>, which combines three “layers” of data in a
@@ -191,7 +191,7 @@ thread’s state may change in between testing <code>ThreadState</code>
 and acting on that information.</p>
 
 <h1>
-	<a name="_Locking">Locking</a>
+	<a name="_Locking">Locking | 阻塞</a>
 </h1>
 
 <p>Exclusive locking is used to ensure that only one thread
@@ -204,9 +204,9 @@ lock can span applications in different processes on the computer.</p>
 <p>In this section, we’ll start with the <code>lock</code>
 construct and then move on to <code><a href="#_Mutex">Mutex</a></code>
 and <a href="#_Semaphore">semaphores</a> (for nonexclusive locking). Later,
-we’ll cover <a href="part4.aspx#_Reader_Writer_Locks">reader/writer locks</a>.</p>
+we’ll cover <a href="part4.html#_Reader_Writer_Locks">reader/writer locks</a>.</p>
 
-<p class="note">From Framework 4.0, there is also the <a href="part5.aspx#_SpinLock_and_SpinWait">SpinLock</a>
+<p class="note">From Framework 4.0, there is also the <a href="part5.html#_SpinLock_and_SpinWait">SpinLock</a>
 struct for high-concurrency scenarios.</p>
 
 <p>Let’s start with the following class:</p>
@@ -260,13 +260,13 @@ lock, because one thread’s access cannot overlap with that of another. In this
 case, we’re protecting the logic inside the <code>Go</code>
 method, as well as the fields <code>_val1</code> and <code>_val2</code>.</p>
 
-<p>A thread blocked while awaiting a contended lock has a <code><a href="#_ThreadState">ThreadState</a></code> of <code>WaitSleepJoin</code>. In <a href="part3.aspx#_Interrupt_and_Abort">Interrupt
+<p>A thread blocked while awaiting a contended lock has a <code><a href="#_ThreadState">ThreadState</a></code> of <code>WaitSleepJoin</code>. In <a href="part3.html#_Interrupt_and_Abort">Interrupt
 and Abort</a>, we describe how a blocked thread can be forcibly released via
 another thread. This is a fairly heavy-duty technique that might be used in
 ending a thread.</p>
 
 <div class="sidebar">
-<p class="sidebartitle">A Comparison of Locking Constructs</p>
+<p class="sidebartitle">A Comparison of Locking Constructs | Locking 构造方法对比</p>
 
 <table border="1" cellspacing="0" cellpadding="0">
 	<tr>
@@ -305,14 +305,14 @@ ending a thread.</p>
 	</tr>
 	<tr>
 		<td valign="top">
-			<a href="part4.aspx#_Reader_Writer_Locks">ReaderWriterLockSlim</a> (introduced in Framework 3.5)</td>
+			<a href="part4.html#_Reader_Writer_Locks">ReaderWriterLockSlim</a> (introduced in Framework 3.5)</td>
 		<td valign="middle" rowspan="2">Allows multiple readers to coexist with a single writer</td>
 		<td valign="top">-</td>
 		<td valign="top">40ns</td>
 	</tr>
 	<tr>
 		<td valign="top">
-			<a href="part4.aspx#_Reader_Writer_Locks">ReaderWriterLock</a> (effectively deprecated)</td>
+			<a href="part4.html#_Reader_Writer_Locks">ReaderWriterLock</a> (effectively deprecated)</td>
 		<td valign="top">-</td>
 		<td valign="top">100ns</td>
 	</tr>
@@ -324,7 +324,7 @@ same thread (assuming no blocking), as measured on an Intel Core i7 860. </p>
 </div>
 
 <h2>
-	<a name="_MonitorEnter_and_MonitorExit">Monitor.Enter and Monitor.Exit</a>
+	<a name="_MonitorEnter_and_MonitorExit">Monitor.Enter and Monitor.Exit | Monitor.Enter 和 Monitor.Exit</a>
 </h2>
 
 <p>C#’s <code>lock</code> statement is in fact
@@ -356,7 +356,7 @@ statement. </p>
 <p>There’s a subtle vulnerability in this code, however.
 Consider the (unlikely) event of an exception being thrown within the implementation
 of <code>Monitor.Enter</code>, or between the call to <code>Monitor.Enter</code> and the <code>try</code> block
-(due, perhaps, to <code><a href="part3.aspx#_Abort">Abort</a></code> being
+(due, perhaps, to <code><a href="part3.html#_Abort">Abort</a></code> being
 called on that thread — or an <code>OutOfMemoryException</code>
 being thrown). In such a scenario, the lock may or may not be taken. If the
 lock <em>is</em> taken, it won’t be released — because we’ll never enter the <code>try</code>/<code>finally</code> block. This will
@@ -402,7 +402,7 @@ overloaded in CLR 4.0 to accept a <code>lockTaken</code>
 argument.</p>
 
 <h2>
-	<a name="_Choosing_the_Synchronization_Object">Choosing the Synchronization Object</a>
+	<a name="_Choosing_the_Synchronization_Object">Choosing the Synchronization Object | 选择同步对象</a>
 </h2>
 
 <p>Any object visible to each of the partaking threads can be
@@ -453,7 +453,7 @@ not <a href="#_Blocking">block</a> because another thread has called <code>lock(
 in order for blocking to occur.</p>
 
 <h2>
-	<a name="_When_to_Lock">When to Lock</a>
+	<a name="_When_to_Lock">When to Lock | 什么时候加锁</a>
 </h2>
 
 <p>As a basic rule, you need to lock around accessing <em>any
@@ -485,13 +485,13 @@ class ThreadSafe
 }
 </pre>
 
-<p>In <a href="part4.aspx#_Nonblocking_Synchronization">Nonblocking
+<p>In <a href="part4.html#_Nonblocking_Synchronization">Nonblocking
 Synchronization</a>, we explain how this need arises, and how the memory
-barriers and the <code><a href="part4.aspx#_Interlocked">Interlocked</a></code>
+barriers and the <code><a href="part4.html#_Interlocked">Interlocked</a></code>
 class can provide alternatives to locking in these situations.</p>
 
 <h2>
-	<a name="_Locking_and_Atomicity">­Locking and Atomicity</a>
+	<a name="_Locking_and_Atomicity">Locking and Atomicity | 加锁与原子化操作</a>
 </h2>
 
 <p>If a group of variables are always read and written within
@@ -535,11 +535,11 @@ to implement “rollback” logic within a <code>catch</code> or <code>finally</
 <p>
 	<em>Instruction</em> atomicity is a different, although
 analogous concept: an instruction is atomic if it executes indivisibly on the
-underlying processor (see <a href="part4.aspx#_Nonblocking_Synchronization">Nonblocking
+underlying processor (see <a href="part4.html#_Nonblocking_Synchronization">Nonblocking
 Synchronization</a>).</p>
 
 <h2>
-	<a name="_Nested_Locking">Nested Locking</a>
+	<a name="_Nested_Locking">Nested Locking | 嵌套加锁</a>
 </h2>
 
 <p>A thread can repeatedly lock the same object in a nested (<i>reentrant</i>) fashion:</p>
@@ -590,7 +590,7 @@ static void AnotherMethod()
 first (outermost) lock.</p>
 
 <h2>
-	<a name="_Deadlocks">Deadlocks</a>
+	<a name="_Deadlocks">Deadlocks | 死锁</a>
 </h2>
 
 <p>A deadlock happens when two threads each wait for a
@@ -643,8 +643,8 @@ the scenario just described. A better strategy is to be wary of locking around
 calling methods in objects that may have references back to your own object.
 Also, consider whether you really need to lock around calling methods in other
 classes (often you do — <a href="#_Locking">as we’ll see later</a> — but sometimes
-there are other options). Relying more on <a href="part5.aspx#_PLINQ">declarative</a> and
-<a href="part5.aspx#_The_Parallel_Class">data parallelism</a>, <a href="#_Immutable_Objects">immutable types</a>, and <a href="part4.aspx#_Nonblocking_Synchronization">nonblocking synchronization constructs</a>,
+there are other options). Relying more on <a href="part5.html#_PLINQ">declarative</a> and
+<a href="part5.html#_The_Parallel_Class">data parallelism</a>, <a href="#_Immutable_Objects">immutable types</a>, and <a href="part4.html#_Nonblocking_Synchronization">nonblocking synchronization constructs</a>,
 can lessen the need for locking.</p>
 
 <p class="note">Here is an alternative way to perceive the problem: when you
@@ -663,7 +663,7 @@ took out the lock. We explain <code>Invoke</code> and <code>BeginInvoke</code> i
 Client Applications and Thread Affinity</a>.</p>
 
 <h2>
-	<a name="_Locking_Performance">Performance</a>
+	<a name="_Locking_Performance">Performance | 性能</a>
 </h2>
 
 <p>Locking is fast: you can expect to acquire and release a
@@ -671,13 +671,13 @@ lock in as little as 20 nanoseconds on a 2010-era computer if the lock is
 uncontended. If it is contended, the consequential context switch moves the
 overhead closer to the microsecond region, although it may be longer before the
 thread is actually rescheduled. You can avoid the cost of a context switch with
-the <a href="part5.aspx#_SpinLock_and_SpinWait">SpinLock</a> class — if you’re locking very briefly.</p>
+the <a href="part5.html#_SpinLock_and_SpinWait">SpinLock</a> class — if you’re locking very briefly.</p>
 
 <p>Locking can degrade concurrency if locks are held for too
 long. This can also increase the chance of <a href="#_Deadlocks">deadlock</a>.</p>
 
 <h2>
-	<a name="_Mutex">Mutex</a>
+	<a name="_Mutex">Mutex | 互斥</a>
 </h2>
 
 <p>A <code>Mutex</code> is like a C# <code>lock</code>, but it can work across multiple processes. In other
@@ -733,7 +733,7 @@ same terminal server session. To make it visible to all terminal server
 sessions, prefix its name with <em>Global\</em>.</p>
 
 <h2>
-	<a name="_Semaphore">Semaphore</a>
+	<a name="_Semaphore">Semaphore | 发信号</a>
 </h2>
 
 <p>A semaphore is like a nightclub: it has a certain
@@ -752,8 +752,8 @@ only the thread that obtained the lock can release it.</p>
 <div class="note">
 	<p>There are two functionally similar versions of this class: <code>Semaphore</code> and <code>SemaphoreSlim</code>.
 The latter was introduced in Framework 4.0 and has been optimized to meet the
-low-latency demands of <a href="part5.aspx#_Parallel_Programming">parallel programming</a>.
-It’s also useful in traditional multithreading because it lets you specify a <a href="part3.aspx#_Cancellation_Tokens">cancellation token</a> when waiting. It cannot,
+low-latency demands of <a href="part5.html#_Parallel_Programming">parallel programming</a>.
+It’s also useful in traditional multithreading because it lets you specify a <a href="part3.html#_Cancellation_Tokens">cancellation token</a> when waiting. It cannot,
 however, be used for interprocess signaling. </p>
 
 	<p>
@@ -814,7 +814,7 @@ activity.</p>
 processes in the same way as a <code>Mutex</code>.</p>
 
 <h1>
-	<a name="_Thread_Safety">Thread Safety</a>
+	<a name="_Thread_Safety">Thread Safety | 线程安全</a>
 </h1>
 
 <p>A program or method is thread-safe if it has no
@@ -877,7 +877,7 @@ generally a better option — at least until a less simplistic automatic locking
 regime becomes available.</p>
 
 <h2>
-	<a name="_Thread_Safety_and_NET_Framework_Types">Thread Safety and .NET Framework Types</a>
+	<a name="_Thread_Safety_and_NET_Framework_Types">Thread Safety and .NET Framework Types | 线程安全与 .NET框架的类型</a>
 </h2>
 
 <p>Locking can be used to convert thread-unsafe code into
@@ -919,7 +919,7 @@ sense that an exception is thrown if the list is modified during enumeration.
 Rather than locking for the duration of enumeration, in this example we first
 copy the items to an array. This avoids holding the lock excessively if what
 we’re doing during enumeration is potentially time-consuming. (Another solution
-is to use a <a href="part4.aspx#_Reader_Writer_Locks">reader/writer lock</a>.)</p>
+is to use a <a href="part4.html#_Reader_Writer_Locks">reader/writer lock</a>.)</p>
 
 <h3>Locking around thread-safe objects</h3>
 
@@ -948,7 +948,7 @@ classes (making the <code>List</code> class’s hypothetical thread
 safety redundant).</p>
 
 <p class="note">Locking around accessing a collection can cause excessive <a href="#_Blocking">blocking</a> in highly concurrent environments. To this end,
-Framework 4.0 provides a <a href="part5.aspx#_Concurrent_Collections">thread-safe queue, stack, and dictionary</a>.
+Framework 4.0 provides a <a href="part5.html#_Concurrent_Collections">thread-safe queue, stack, and dictionary</a>.
 </p>
 
 <h3>Static members</h3>
@@ -1002,7 +1002,7 @@ Therefore, you must either lock around using the <code>Random</code>
 class, or maintain a separate instance per thread.</p>
 
 <h2>
-	<a name="_Thread_Safety_in_Application_Servers">Thread Safety in Application Servers</a>
+	<a name="_Thread_Safety_in_Application_Servers">Thread Safety in Application Servers | 应用服务器中的线程安全</a>
 </h2>
 
 <p>Application servers need to be multithreaded to handle
@@ -1062,7 +1062,7 @@ during which time other threads would be <a href="#_Blocking">blocked</a> in
 retrieving <em>any</em> user.</p>
 
 <h2>
-	<a name="_Rich_Client_Applications">Rich Client Applications and Thread Affinity</a>
+	<a name="_Rich_Client_Applications">Rich Client Applications and Thread Affinity | RCP 应用程序与线程关联性</a>
 </h2>
 
 <p>Both the Windows Presentation Foundation (WPF) and Windows
@@ -1136,12 +1136,12 @@ method instead:</p>
 	<ul>
 		<li>
 			<code>
-				<a href="part3.aspx#_BackgroundWorker">BackgroundWorker</a>
+				<a href="part3.html#_BackgroundWorker">BackgroundWorker</a>
 			</code>
 		</li>
 		<li>
 			<code>
-				<a href="part5.aspx#_Continuations">Task continuations</a>
+				<a href="part5.html#_Continuations">Task continuations</a>
 			</code>
 		</li>
 	</ul>
@@ -1156,7 +1156,7 @@ not. Worker threads typically execute long-running tasks such as fetching data.<
 
 <p>Most rich client applications have a single UI thread
 (which is also the main application thread) and periodically spawn worker
-threads — either directly or using <code><a href="part3.aspx#_BackgroundWorker">BackgroundWorker</a></code>. These workers then
+threads — either directly or using <code><a href="part3.html#_BackgroundWorker">BackgroundWorker</a></code>. These workers then
 marshal back to the main UI thread in order to update controls or report on
 progress.</p>
 
@@ -1169,7 +1169,7 @@ SDI windows. By giving each such window its own UI thread, the application can
 be made more responsive.</p>
 
 <h2>
-	<a name="_Immutable_Objects">Immutable Objects</a>
+	<a name="_Immutable_Objects">Immutable Objects | 不变对象</a>
 </h2>
 
 <p>An immutable object is one whose state cannot be altered — externally
@@ -1240,22 +1240,22 @@ string msg = statusCopy.StatusMessage;
 </pre>
 
 <p class="note">Technically, the last two lines of code are thread-safe by
-virtue of the preceding lock performing an implicit <em><a href="part4.aspx#_Memory_Barriers_and_Volatility">memory barrier (see part 4)</a></em>.</p>
+virtue of the preceding lock performing an implicit <em><a href="part4.html#_Memory_Barriers_and_Volatility">memory barrier (see part 4)</a></em>.</p>
 
 <p>Note that this lock-free approach prevents inconsistency
 within a group of related fields. But it doesn't prevent data from changing
 while you subsequently act on it — for this, you usually need a lock. In Part 5,
 we’ll see more examples of using immutability to simplify
-multithreading — including <a href="part5.aspx#_PLINQ">PLINQ</a>.</p>
+multithreading — including <a href="part5.html#_PLINQ">PLINQ</a>.</p>
 
 <p class="note">It’s also possible to safely assign a new <code>ProgressStatus</code>
 object based on its preceding value (e.g., it’s possible to “increment” the <code>PercentComplete</code> value) — without locking over more than one
 line of code. In fact, we can do this without using a single lock, through the
 use of explicit memory barriers, <code>Interlocked.CompareExchange</code>,
-and spin-waits. This is an advanced technique which we describe in <a href="part5.aspx#_SpinLock_and_SpinWait">later in the parallel programming section</a>.</p>
+and spin-waits. This is an advanced technique which we describe in <a href="part5.html#_SpinLock_and_SpinWait">later in the parallel programming section</a>.</p>
 
 <h1>
-	<a name="_Signaling_with_Event_Wait_Handles">Signaling with Event Wait Handles</a>
+	<a name="_Signaling_with_Event_Wait_Handles">Signaling with Event Wait Handles 和事件等待对象(EWH)通信</a>
 </h1>
 
 <p>Event wait handles are used for <i>signaling</i>. Signaling is when one thread waits
@@ -1268,7 +1268,7 @@ The former two are based on the common <code>EventWaitHandle</code>
 class, where they derive all their functionality.</p>
 
 <div class="sidebar">
-<p class="sidebartitle">A Comparison of Signaling Constructs</p>
+<p class="sidebartitle">A Comparison of Signaling Constructs | 信号构造方法的对比</p>
 
 <table border="1" cellspacing="0" cellpadding="0">
 	<tr>
@@ -1313,7 +1313,7 @@ class, where they derive all their functionality.</p>
 	</tr>
 	<tr>
 		<td valign="top">
-			<a href="part4.aspx#_The_Barrier_Class">Barrier</a> (introduced in Framework
+			<a href="part4.html#_The_Barrier_Class">Barrier</a> (introduced in Framework
   4.0)</td>
 		<td valign="top">Implements a thread execution barrier</td>
 		<td valign="top">-</td>
@@ -1321,7 +1321,7 @@ class, where they derive all their functionality.</p>
 	</tr>
 	<tr>
 		<td valign="top">
-			<a href="part4.aspx#_Signaling_with_Wait_and_Pulse">Wait and Pulse</a></td>
+			<a href="part4.html#_Signaling_with_Wait_and_Pulse">Wait and Pulse</a></td>
 		<td valign="top">Allows a thread to block until a custom condition is met</td>
 		<td valign="top">-</td>
 		<td valign="top">120ns for a <code>Pulse</code></td>
@@ -1334,7 +1334,7 @@ the same thread (assuming no blocking), as measured on an Intel Core i7 860.</p>
 </div>
 
 <h2>
-	<a name="_AutoResetEvent">AutoResetEvent</a>
+	<a name="_AutoResetEvent">AutoResetEvent | AutoResetEvent</a>
 </h2>
 
 <p>An <code>AutoResetEvent</code> is like a
@@ -1419,7 +1419,7 @@ because of a timeout rather than obtaining the signal.</p>
 the caller. Bear in mind, though, that doing this resets the <code>AutoResetEvent</code> if it’s open.</p>
 
 <div class="sidebar">
-<p class="sidebartitle">Disposing Wait Handles</p>
+<p class="sidebartitle">Disposing Wait Handles | 销毁等待对象</p>
 
 <p>Once you’ve finished with a wait handle, you can call its <code>Close</code> method to release the operating system resource.
 Alternatively, you can simply drop all references to the wait handle and allow
@@ -1623,7 +1623,7 @@ Goodbye!
 
 <div class="note">
 	<p>Framework 4.0 provides a new
-class called <a href="part5.aspx#_BlockingCollectionT">BlockingCollection&lt;T&gt;</a> that
+class called <a href="part5.html#_BlockingCollectionT">BlockingCollection&lt;T&gt;</a> that
 implements the functionality of a producer/consumer queue.</p>
 
 	<p>Our manually written producer/consumer queue is still
@@ -1631,12 +1631,12 @@ valuable — not only to illustrate <code>AutoResetEvent</code> and <a href="#_T
 sophisticated structures. For instance, if we wanted a <i>bounded blocking queue</i> (limiting the number of
 enqueued tasks) and also wanted to support cancellation (and removal) of
 enqueued work items, our code would provide an excellent starting point. We’ll
-take the producer/consume queue example further in our discussion of <a href="part4.aspx#_Wait_Pulse_Producer_Consumer_Queue">Wait and Pulse</a>.</p>
+take the producer/consume queue example further in our discussion of <a href="part4.html#_Wait_Pulse_Producer_Consumer_Queue">Wait and Pulse</a>.</p>
 
 </div>
 
 <h2>
-	<a name="_ManualResetEvent">ManualResetEvent</a>
+	<a name="_ManualResetEvent">ManualResetEvent | ManualResetEvent</a>
 </h2>
 
 <p>A <code>ManualResetEvent</code> functions
@@ -1657,13 +1657,13 @@ var manual2 = new EventWaitHandle (false, EventResetMode.ManualReset);
 
 <p class="note">From Framework 4.0, there's another version of <code>ManualResetEvent</code> called <code>ManualResetEventSlim</code>.
 The latter is optimized for short waiting times — with the ability to opt into <a href="#_Blocking_Versus_Spinning">spinning</a> for a set number of iterations.
-It also has a more efficient managed implementation and allows a <code>Wait</code> to be canceled via a <code><a href="part3.aspx#_Cancellation_Tokens">CancellationToken</a></code>. It cannot, however, be
+It also has a more efficient managed implementation and allows a <code>Wait</code> to be canceled via a <code><a href="part3.html#_Cancellation_Tokens">CancellationToken</a></code>. It cannot, however, be
 used for interprocess signaling. <code>ManualResetEventSlim</code>
 doesn’t subclass <code>WaitHandle</code>; however, it exposes a <code>WaitHandle</code> property that returns a <code>WaitHandle</code>-based
 object when called (with the performance profile of a traditional wait handle).</p>
 
 <div class="sidebar">
-<p class="sidebartitle">Signaling Constructs and Performance</p>
+<p class="sidebartitle">Signaling Constructs and Performance | Signaling 的构造方法和性能</p>
 
 <p>Waiting or signaling an <code>AutoResetEvent</code>
 or <code>ManualResetEvent</code> takes about one microsecond
@@ -1672,12 +1672,12 @@ or <code>ManualResetEvent</code> takes about one microsecond
 <p>
 	<code>ManualResetEventSlim</code> and <code><a href="#_CountdownEvent">CountdownEvent</a></code> can be up to
 50 times faster in short-wait scenarios, because of their nonreliance on the
-operating system and judicious use of <a href="part5.aspx#_SpinLock_and_SpinWait">spinning constructs</a>.</p>
+operating system and judicious use of <a href="part5.html#_SpinLock_and_SpinWait">spinning constructs</a>.</p>
 
 <p>In most scenarios, however, the overhead of the signaling
 classes themselves doesn’t create a bottleneck, and so is rarely a
 consideration. An exception is with highly concurrent code, which we’ll discuss
-in <a href="part5.aspx#_Parallel_Programming">Part 5</a>.</p>
+in <a href="part5.html#_Parallel_Programming">Part 5</a>.</p>
 
 </div>
 
@@ -1686,7 +1686,7 @@ allowing one thread to unblock many other threads. The reverse scenario is
 covered by <code>CountdownEvent</code>.</p>
 
 <h2>
-	<a name="_CountdownEvent">CountdownEvent</a>
+	<a name="_CountdownEvent">CountdownEvent | CountdownEvent</a>
 </h2>
 
 <p>
@@ -1695,7 +1695,7 @@ more than one thread. The class is new to Framework 4.0 and has an efficient
 fully managed implementation. </p>
 
 <p class="note">If you’re running on an earlier version of the .NET Framework,
-all is not lost! Later on, we show how to write a <code>CountdownEvent</code> <a href="part4.aspx#_Writing_a_CountdownEvent">using Wait and Pulse</a>. </p>
+all is not lost! Later on, we show how to write a <code>CountdownEvent</code> <a href="part4.html#_Writing_a_CountdownEvent">using Wait and Pulse</a>. </p>
 
 <p>To use <code>CountdownEvent</code>,
 instantiate the class with the number of threads or “counts” that you want to
@@ -1732,7 +1732,7 @@ static void SaySomething (object thing)
 
 <p class="note">Problems for which <code>CountdownEvent</code>
 is effective can sometimes be solved more easily using the <i>structured parallelism</i> constructs that we’ll cover
-in Part 5 (<a href="part5.aspx#_PLINQ">PLINQ</a> and the <code><a href="part5.aspx#_The_Parallel_Class">Parallel</a></code> class).</p>
+in Part 5 (<a href="part5.html#_PLINQ">PLINQ</a> and the <code><a href="part5.html#_The_Parallel_Class">Parallel</a></code> class).</p>
 
 <p>You can reincrement a <code>CountdownEvent</code>’s
 count by calling <code>AddCount</code>. However, if it has
@@ -1748,7 +1748,7 @@ property for scenarios where some other class or method expects an object based
 on <code>WaitHandle</code>.</p>
 
 <h2>
-	<a name="_CrossProcess_EventWaitHandle">Creating a Cross-Process EventWaitHandle</a>
+	<a name="_CrossProcess_EventWaitHandle">Creating a Cross-Process EventWaitHandle | 创建跨进程的 EventWaitHandle</a>
 </h2>
 
 <p>
@@ -1770,7 +1770,7 @@ to signal each other: the wait handle would work across all threads in both
 processes.</p>
 
 <h2>
-	<a name="_Wait_Handles_and_the_Thread_Pool">Wait Handles and the Thread Pool</a>
+	<a name="_Wait_Handles_and_the_Thread_Pool">Wait Handles and the Thread Pool | 等待对象和线和池</a>
 </h2>
 
 <p>If your application has lots of threads that spend most of
@@ -1849,7 +1849,7 @@ static void Resume (object data, bool timedOut)
 allows continuance of any transient data.</p>
 
 <h2>
-	<a name="_WaitAny_WaitAll_SignalAndWait">WaitAny, WaitAll, and SignalAndWait</a>
+	<a name="_WaitAny_WaitAll_SignalAndWait">WaitAny, WaitAll, and SignalAndWait | WaitAny, WaitAll, 和 SignalAndWait</a>
 </h2>
 
 <p>In addition to the <code>Set</code>, <code>WaitOne</code>, and <code>Reset</code> methods,
@@ -1912,22 +1912,22 @@ WaitHandle.SignalAndWait (wh2, wh1);
 Fortunately, there are alternatives. In the case of <code>SignalAndWait</code>,
 it’s rare that you need its queue-jumping semantics: in our rendezvous example, for
 instance, it would be valid simply to call <code>Set</code> on the first
-wait handle, and then <code>WaitOne</code> on the other, if the wait handles were used solely for that rendezvous. In <a href="part4.aspx#_The_Barrier_Class">The Barrier Class</a>, we’ll explore yet another
+wait handle, and then <code>WaitOne</code> on the other, if the wait handles were used solely for that rendezvous. In <a href="part4.html#_The_Barrier_Class">The Barrier Class</a>, we’ll explore yet another
 option for implementing a thread rendezvous.</p>
 
 <p>In the case of <code>WaitAll</code>, an
-alternative in some situations is to use the <code><a href="part5.aspx#_Parallel.Invoke">Parallel
+alternative in some situations is to use the <code><a href="part5.html#_Parallel.Invoke">Parallel
 class’s Invoke method</a></code>,
-which we’ll cover in Part 5. (We’ll also cover <code><a href="part5.aspx#_Task_Parallelism">Task</a></code>s and <a href="part5.aspx#_Continuations">continuations</a>,
-and see how <code>TaskFactory</code>'s <code><a href="part5.aspx#_Continuations_with_multiple_antecedents">ContinueWhenAny</a></code>
+which we’ll cover in Part 5. (We’ll also cover <code><a href="part5.html#_Task_Parallelism">Task</a></code>s and <a href="part5.html#_Continuations">continuations</a>,
+and see how <code>TaskFactory</code>'s <code><a href="part5.html#_Continuations_with_multiple_antecedents">ContinueWhenAny</a></code>
 provides an alternative to <code>WaitAny</code>.)</p>
 
 <p>In all other scenarios, the answer is to take the
-low-level approach that solves all signaling problems: <code><a href="part4.aspx#_Signaling_with_Wait_and_Pulse">Wait and
+low-level approach that solves all signaling problems: <code><a href="part4.html#_Signaling_with_Wait_and_Pulse">Wait and
 Pulse</a></code>.</p>
 
 <h1>
-	<a name="_Synchronization_Contexts">Synchronization Contexts</a>
+	<a name="_Synchronization_Contexts">Synchronization Contexts | 同步环境</a>
 </h1>
 
 <p>An alternative to <a href="#_Locking">locking manually</a>
@@ -2116,7 +2116,7 @@ resolving it. This is in contrast to explicit locks, where deadlocks are
 usually more obvious.</p>
 
 <h2>
-	<a name="_Reentrancy">Reentrancy</a>
+	<a name="_Reentrancy">Reentrancy | 可重入性(Reentrancy)</a>
 </h2>
 
 <p>A thread-safe method is sometimes called reentrant,

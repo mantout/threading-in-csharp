@@ -14,7 +14,7 @@
 <div id="main">
   <p class="title">C#中的线程</p>
   <p class="author">作者：Joseph Albahari</p>
-  <p class="author">翻译：chuwentao</p>
+  <p class="author">翻译：<a href="http://www.chuwentao.com">chuwentao</a></p>
   <div id="ctl00_toc">
   <table class="toc" border="0" cellspacing="0" cellpadding="0">
 	<tbody><tr>
@@ -28,7 +28,7 @@
 	  <td class="toc"><a class="toc" href="part2.html">线程同步基础</a></td>
 	  <td class="toc"><a class="toc" href="part3.html">使用多线程</a></td>
 	  <td class="toc"><a class="toc" href="part4.html">高级话题</a></td>
-	  <td class="toc"><a class="toc" href="part5.html">平行编程</a></td>
+	  <td class="toc"><a class="toc" href="part5.html">并行编程</a></td>
 	</tr></tbody>
   </table>
   </div>
@@ -240,7 +240,7 @@ class ThreadSafe
 case, <code>locker</code>), one thread waits, or <a href="part2.html#_Blocking">blocks</a>, until the lock becomes available. In this case,
 it ensures only one thread can enter the critical section of code at a time,
 and “Done” will be printed just once. Code that's protected in such a manner — from
-indeterminacy in a multithreading context — is called <a href="part2.aspx#_Thread_Safety">thread-safe</a>.</p>
+indeterminacy in a multithreading context — is called <a href="part2.html#_Thread_Safety">thread-safe</a>.</p>
 
 <p>两个线程同时竞争一个<code>锁</code>的时候，一个线程处于等待或者阻塞状态，直到锁解除。
 这种机制保证了在某一个时间只有一个线程进入临界区（critical section），在这个示例中，”Done”将只会打印一次。
@@ -392,7 +392,7 @@ otherwise unburdened computer.</dd>
 	<dt>Parallel programming</dt>
 	<dd>Code that performs intensive calculations can execute
 faster on multicore or multiprocessor computers if the workload is shared among
-multiple threads in a “divide-and-conquer” strategy (see <a href="part5.aspx">Part 5</a>).</dd>
+multiple threads in a “divide-and-conquer” strategy (see <a href="part5.html">Part 5</a>).</dd>
 	<dt>Speculative execution</dt>
 	<dd>On multicore machines, you can sometimes improve
 performance by predicting something that might need to be done, and then doing
@@ -408,14 +408,16 @@ so need to be handled in parallel (the .NET Framework creates threads for this
 automatically if you use ASP.NET, WCF, Web Services, or Remoting). This can
 also be useful on a client (e.g., handling peer-to-peer networking — or even
 multiple requests from the user).</dd>
-<dd>服务器接受用户请求是同时的，这就要求服务器必须同时处理这些请求（如果使用ASP.NET、WCF、Web Services或者Remoting开发的话，.NET框架会自动创建线程来处理这些问题）。这一点在客户端非常有用（如处理P2P网络乃至用户多重请求）。</dd>
+<dd>服务器接受用户请求是同时的，这就要求服务器必须同时处理这些请求（如果使用ASP.NET、WCF、Web Services或者Remoting开发的话，
+.NET框架会自动创建线程来处理这些问题）。这一点在客户端非常有用（如处理P2P网络乃至用户多重请求）。</dd>
 </dl>
 
 <p>With technologies such as ASP.NET and WCF, you may be <a href="part2.html#_Thread_Safety_in_Application_Servers">unaware that multithreading is even taking place</a> — unless
 you access shared data (perhaps via static fields) without appropriate <a href="part2.html#_Locking">locking</a>, <a href="part2.html#_Thread_Safety_in_Application_Servers">running afoul of
 thread safety.</a></p>
 <p>配合ASP .NET和WCF等技术，你或许根本<a href="part2.html#_Thread_Safety_in_Application_Servers">不会意识到多线程的存在</a>，
-除非你在读写共享数据（可能通过静态属性）时没有正确使用 <a href="part2.html#_Locking">locking</a> 或者<a href="part2.html#_Thread_Safety_in_Application_Servers">其他线程不安全的作法</a>。</p>
+除非你在读写共享数据（可能通过静态属性）时没有正确使用 <a href="part2.html#_Locking">locking</a> 
+或者<a href="part2.html#_Thread_Safety_in_Application_Servers">其他线程不安全的作法</a>。</p>
 
 <p>Threads also come with strings attached. The biggest is
 that multithreading can increase complexity. Having lots of threads does not in
@@ -437,12 +439,12 @@ cores) — and there’s also a creation/tear-down cost. Multithreading will not
 always speed up your application — it can even slow it down if used excessively
 or inappropriately. For example, when heavy disk I/O is involved, it can be
 faster to have a couple of worker threads run tasks in sequence than to have 10
-threads executing at once. (In <a href="part4.aspx#_Signaling_with_Wait_and_Pulse">Signaling with
-Wait and Pulse</a>, we describe how to implement a <a href="part4.aspx#_Wait_Pulse_Producer_Consumer_Queue">producer/consumer queue</a>, which provides
+threads executing at once. (In <a href="part4.html#_Signaling_with_Wait_and_Pulse">Signaling with
+Wait and Pulse</a>, we describe how to implement a <a href="part4.html#_Wait_Pulse_Producer_Consumer_Queue">producer/consumer queue</a>, which provides
 just this functionality.)</p>
 
 <h1>
-	<a name="_Creating_and_Starting_Threads">Creating and Starting Threads</a>
+	<a name="_Creating_and_Starting_Threads">Creating and Starting Threads | 创建和启动线程</a>
 </h1>
 
 <p>As we saw in the introduction, threads are created using
@@ -502,7 +504,7 @@ static void Main()
 </pre>
 
 <h2>
-	<a name="_Passing_Data_to_a_Thread">Passing Data to a Thread</a>
+	<a name="_Passing_Data_to_a_Thread">Passing Data to a Thread | 将数据传给线程</a>
 </h2>
 
 <p>The easiest way to pass arguments to a thread’s target
@@ -634,7 +636,7 @@ t2
 </pre>
 
 <h2>
-	<a name="_Naming_Threads">Naming Threads</a>
+	<a name="_Naming_Threads">Naming Threads | 为线程赋名字</a>
 </h2>
 
 <p>Each thread has a <code>Name</code> property
@@ -667,7 +669,7 @@ class ThreadNaming
 </pre>
 
 <h2>
-	<a name="_Foreground_and_Background_Threads">Foreground and Background Threads</a>
+	<a name="_Foreground_and_Background_Threads">Foreground and Background Threads | 前台线程与后台线程</a>
 </h2>
 
 <p>By default, threads you create explicitly are <i>foreground threads</i>. Foreground threads keep the
@@ -710,7 +712,7 @@ an application. There are two ways to accomplish this:</p>
 <ul>
 	<li>If you’ve created the thread yourself, call <code><a href="#_Join_and_Sleep">Join</a></code> on the thread.</li>
 	<li>If you’re on a <a href="#_Thread_Pooling">pooled thread</a>, use
-an <a href="part2.aspx#_Signaling_with_Event_Wait_Handles">event wait handle</a>.</li>
+an <a href="part2.html#_Signaling_with_Event_Wait_Handles">event wait handle</a>.</li>
 </ul>
 
 <p>In either case, you should specify a timeout, so you can
@@ -729,7 +731,7 @@ cause for applications failing to exit properly is the presence of active
 foreground threads.</p>
 
 <h2>
-	<a name="_Thread_Priority">Thread Priority</a>
+	<a name="_Thread_Priority">Thread Priority | 线程优先级</a>
 </h2>
 
 <p>A thread’s <code>Priority</code> property
@@ -786,7 +788,7 @@ unmanaged applications — that are best solved with dedicated hardware or a
 specialized real-time platform.</p>
 
 <h2>
-	<a name="_Exception_Handling">Exception Handling</a>
+	<a name="_Exception_Handling">Exception Handling | 异常处理</a>
 </h2>
 
 <p>Any <code>try</code>/<code>catch</code>/<code>finally</code> blocks in scope when a thread is created are of no
@@ -876,15 +878,15 @@ you. These are covered in upcoming sections, and are:</p>
 	</li>
 	<li>
 		<code>
-			<a href="part3.aspx#_BackgroundWorker">BackgroundWorker</a>
+			<a href="part3.html#_BackgroundWorker">BackgroundWorker</a>
 		</code>
 	</li>
-	<li>The <a href="part5.aspx#_The_Parallel_Class">Task Parallel Library</a>
+	<li>The <a href="part5.html#_The_Parallel_Class">Task Parallel Library</a>
 (conditions apply)</li>
 </ul>
 
 <h1>
-	<a name="_Thread_Pooling">Thread Pooling</a>
+	<a name="_Thread_Pooling">Thread Pooling | 线程池</a>
 </h1>
 
 <p>Whenever you start a thread, a few hundred microseconds
@@ -907,11 +909,11 @@ the pooled threads; we describe this in Chapter 23 of <a href="http://www.albaha
 <p>There are a number of ways to enter the thread pool:</p>
 
 <ul>
-	<li>Via the <a href="part5.aspx#_The_Parallel_Class">Task Parallel Library</a>
+	<li>Via the <a href="part5.html#_The_Parallel_Class">Task Parallel Library</a>
 (from Framework 4.0)</li>
 	<li>By calling <code><a href="#_QueueUserWorkItem">ThreadPool.QueueUserWorkItem</a></code></li>
 	<li>Via <a href="#_Asynchronous_delegates">asynchronous delegates</a></li>
-	<li>Via <code><a href="part3.aspx#_BackgroundWorker">BackgroundWorker</a></code></li>
+	<li>Via <code><a href="part3.html#_BackgroundWorker">BackgroundWorker</a></code></li>
 </ul>
 
 <div class="note">
@@ -921,12 +923,12 @@ the pooled threads; we describe this in Chapter 23 of <a href="http://www.albaha
 Remoting, ASP.NET, and ASMX Web Services application servers</li>
 		<li>
 			<code>
-				<a href="part3.aspx#_Multithreaded_Timers">System.Timers.Timer</a>
+				<a href="part3.html#_Multithreaded_Timers">System.Timers.Timer</a>
 			</code>
-and <code><a href="part3.aspx#_Multithreaded_Timers">System.Threading.Timer</a></code></li>
+and <code><a href="part3.html#_Multithreaded_Timers">System.Threading.Timer</a></code></li>
 		<li>Framework
 methods that end in <em>Async</em>, such as those on <code>WebClient</code>
-(the <em><a href="part3.aspx#_Event-Based_Asynchronous_Pattern">event-based
+(the <em><a href="part3.html#_Event-Based_Asynchronous_Pattern">event-based
 asynchronous pattern</a></em>), and most <code>Begin</code><span class="Replaceable">XXX</span> methods (the <em>asynchronous programming model</em>
 pattern)</li>
 		<li>PLINQ</li>
@@ -936,8 +938,8 @@ pattern)</li>
 <p>The <i>Task Parallel Library</i>
 (TPL) and PLINQ are sufficiently powerful and high-level that you’ll want to
 use them to assist in multithreading even when thread pooling is unimportant. We
-discuss these in detail <a href="part5.aspx">in Part 5</a>; right
-now, we'll look briefly at how you can use the <code><a href="part5.aspx#_Task_Parallelism">Task</a></code> class as a simple means of running a delegate
+discuss these in detail <a href="part5.html">in Part 5</a>; right
+now, we'll look briefly at how you can use the <code><a href="part5.html#_Task_Parallelism">Task</a></code> class as a simple means of running a delegate
 on a pooled thread.</p>
 
 <div class="note">
@@ -951,7 +953,7 @@ in Visual Studio’s Threads window).</li>
 threads are always <i><a href="#_Foreground_and_Background_Threads">background
 threads</a></i> (this is usually not a problem).</li>
 		<li>
-			<a href="part2.aspx#_Blocking">Blocking</a> a pooled thread may trigger additional latency
+			<a href="part2.html#_Blocking">Blocking</a> a pooled thread may trigger additional latency
 in the early life of an application unless you call <code>ThreadPool.SetMinThreads</code>
 (see <a href="#_Optimizing_the_Thread_Pool">Optimizing the Thread Pool</a>). </li>
 	</ul>
@@ -964,10 +966,10 @@ pool.</p>
 thread via the property <code>Thread.CurrentThread.IsThreadPoolThread</code>.</p>
 
 <h2>
-	<a name="_Entering_the_Thread_Pool_via_TPL">Entering the Thread Pool via TPL</a>
+	<a name="_Entering_the_Thread_Pool_via_TPL">Entering the Thread Pool via TPL | 通过 TPL 进入线程池</a>
 </h2>
 
-<p>You can enter the thread pool easily using the <code><a href="part5.aspx#_Task_Parallelism">Task</a></code> classes in the Task
+<p>You can enter the thread pool easily using the <code><a href="part5.html#_Task_Parallelism">Task</a></code> classes in the Task
 Parallel Library. The <code>Task</code> classes were introduced
 in Framework 4.0: if you’re familiar with the older constructs, consider the
 nongeneric <code>Task</code> class a replacement for <code><a href="#_QueueUserWorkItem">ThreadPool.QueueUserWorkItem</a></code>,
@@ -994,10 +996,10 @@ static void Go()
 <p>
 	<code>Task.Factory.StartNew</code> returns a
 <code>Task</code> object, which you can then use to monitor the
-task — for instance, you can wait for it to complete by calling its <code><a href="part5.aspx#_Waiting_on_Tasks">Wait</a></code> method.</p>
+task — for instance, you can wait for it to complete by calling its <code><a href="part5.html#_Waiting_on_Tasks">Wait</a></code> method.</p>
 
 <p class="note">Any unhandled exceptions are conveniently rethrown onto the
-host thread when you call a task's <code><a href="part5.aspx#_Waiting_on_Tasks">Wait method</a></code>.
+host thread when you call a task's <code><a href="part5.html#_Waiting_on_Tasks">Wait method</a></code>.
 (If you don’t call <code>Wait</code> and instead abandon the task, an
 unhandled exception will shut down the process <a href="#_Exception_Handling">as
 with an ordinary thread</a>.)</p>
@@ -1035,17 +1037,17 @@ argument highlighted is for clarity: it would be <em>inferred</em> if we
 omitted it.)</p>
 
 <p>Any unhandled exceptions are automatically rethrown when
-you query the task's <code>Result</code> property, wrapped in an <code><a href="part5.aspx#_Working_with_AggregateException">AggregateException</a></code>.
+you query the task's <code>Result</code> property, wrapped in an <code><a href="part5.html#_Working_with_AggregateException">AggregateException</a></code>.
 However, if you fail to query its <code>Result</code> property
 (and don’t call <code>Wait</code>) any unhandled exception will
 take the process down. </p>
 
 <p>The Task Parallel Library has many more features, and is
 particularly well suited to leveraging multicore processors. We’ll resume our
-discussion of TPL <a href="part5.aspx#_Task_Parallelism">in Part 5</a>. </p>
+discussion of TPL <a href="part5.html#_Task_Parallelism">in Part 5</a>. </p>
 
 <h2>
-	<a name="_Entering_the_Thread_Pool_Without_TPL">Entering the Thread Pool Without TPL</a>
+	<a name="_Entering_the_Thread_Pool_Without_TPL">Entering the Thread Pool Without TPL | 不通过 TPL 进入线程池</a>
 </h2>
 
 <p>You can't use the Task Parallel Library if you're
@@ -1185,7 +1187,7 @@ delegate to the completion callback, so we can call <code>EndInvoke</code>
 on it.</p>
 
 <h2>
-	<a name="_Optimizing_the_Thread_Pool">Optimizing the Thread Pool</a>
+	<a name="_Optimizing_the_Thread_Pool">Optimizing the Thread Pool | 优化线程池</a>
 </h2>
 
 <p>The thread pool starts out with one thread in its pool. As
@@ -1207,14 +1209,14 @@ defaults are:</p>
 
 <p>(These figures may vary according to the hardware and
 operating system.) The reason there are that many is to ensure progress should
-some threads be <a href="part2.aspx#_Blocking">blocked</a> (idling while awaiting some
+some threads be <a href="part2.html#_Blocking">blocked</a> (idling while awaiting some
 condition, such as a response from a remote computer).</p>
 
 <p>You can also set a lower limit by calling <code>ThreadPool.SetMinThreads</code>. The role of the lower limit is
 subtler: it’s an advanced optimization technique that instructs the pool
 manager not to <em>delay</em> in the allocation of threads until reaching the
 lower limit. Raising the minimum thread count improves concurrency when there
-are <a href="part2.aspx#_Blocking">blocked</a> threads (see sidebar).</p>
+are <a href="part2.html#_Blocking">blocked</a> threads (see sidebar).</p>
 
 <p class="note">The default lower limit is one thread per processor core — the
 minimum that allows full CPU utilization. On server environments, though (such
@@ -1222,7 +1224,7 @@ ASP.NET under IIS), the lower limit is typically much higher — as much as 50 o
 more.</p>
 
 <div class="sidebar">
-<p class="sidebartitle">How Does the Minimum Thread Count Work?</p>
+<p class="sidebartitle">How Does the Minimum Thread Count Work? | 最小线程计数是如何工作的？</p>
 
 <p>Increasing the thread pool’s minimum thread count to <em>x</em>
 doesn’t actually force <em>x</em> threads to be created right away — threads are
