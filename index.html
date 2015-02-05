@@ -33,7 +33,7 @@
   </table>
   </div>
   <p class="sectiontitle">Part 1: 入门</p>
-  <h1><a name="_Introduction">概述及概念</a></h1>
+  <h1><a name="_Introduction">Introduction and Concepts | 概述及概念</a></h1>
   <p>C# supports parallel execution of code through multithreading. A thread is an independent 
 execution path, able to run simultaneously with other threads.</p>
   <p>C#支持通过多线程来并行地执行代码。一个线程是一条独立的执行路径，它可以与其他线程同时运行。</p>
@@ -93,23 +93,25 @@ Simultaneously, the main thread repeatedly prints the character “x”:</p>
 property returns <code>true</code>, until the point where the
 thread ends. A thread ends when the delegate passed to the <code>Thread</code>’s
 constructor finishes executing. Once ended, a thread cannot restart.</p>
-<p>线程启动后，它的 <code>IsAlive</code> 属性就为 <code>true</code>，直到线程终止。线
-程构造时传入的代理运行完成后，线程就自动终止。线程终止后无法再次启动。</p>
+<p>线程启动后，它的 <code>IsAlive</code> 属性就为 <code>true</code>，直到线程终止。
+线程构造时传入的代理运行完成后，线程就自动终止。线程终止后无法再次启动。</p>
 <p>The CLR assigns each thread its own memory stack so that
 local variables are kept separate. In the next example, we define a method with
 a local variable, then call the method simultaneously on the main thread and a
 newly created thread:</p>
-
+<p>CLR为每一个线程分配独立的栈空间用于存储局部变量。下一个示例中，
+我们定义了一个带局部变量的方法，然后在主线程和创建的线程中同时调用这个方法：</p>
 <pre class="sh_csharp">
 static void Main() 
 {
-  new Thread (Go).Start();      // Call Go() on a new thread
-  Go();                         // Call Go() on the main thread
+  new Thread (Go).Start();      // Call Go() on a new thread | 在新线程中调用 Go()
+  Go();                         // Call Go() on the main thread | 在主线程中调用 Go()
 }
  
 static void Go()
 {
   // Declare and use a local variable - 'cycles'
+  // 声明并使用局部变量 'cycles'
   for (int cycles = 0; cycles &lt; 5; cycles++) Console.Write ('?');
 }
 </pre>
@@ -120,9 +122,11 @@ static void Go()
 
 <p>A separate copy of the cycles variable is created on each
 thread's memory stack, and so the output is, predictably, ten question marks.</p>
-
+<p>局部变量cycles在每个线程的栈中都是单独存储的，所以，程序的输出不出意料就是10个问号。
+（译注：意思是说循环变量不会相互干扰。）</p>
 <p>Threads share data if they have a common reference to the
 same object instance. For example:</p>
+<p>多个线程如果持有同一个对象的引用，则他们可以共享数据。</p>
 
 <pre class="sh_csharp">
 class ThreadTest
@@ -131,12 +135,13 @@ class ThreadTest
  
   static void Main()
   {
-    ThreadTest tt = new ThreadTest();   // Create a common instance
+    ThreadTest tt = new ThreadTest();   // Create a common instance | 创建一个共用的实例
     new Thread (tt.Go).Start();
     tt.Go();
   }
  
   // Note that Go is now an instance method
+  // 注意：Go 是一个实例对象的方法
   void Go() 
   {
      if (!done) { done = true; Console.WriteLine ("Done"); }
@@ -145,8 +150,11 @@ class ThreadTest
 </pre>
 
 <p>Because both threads call <code>Go()</code>
-on the same <code>ThreadTest</code> instance, they share the <code>done</code> field. This results in "Done" being printed
+on the same <code>ThreadTest</code> instance, they share the <code>done</code> field.
+This results in "Done" being printed
 once instead of twice:</p>
+<p>两个线程调用的是同一个 <code>ThreadTest</code> 实例的 <code>Go()</code> 方法，
+它们共有 <code>done</code> 属性。这导致了程序输出一次”Done”而不是两次。</p>
 
 <pre class="output">
 Done
@@ -155,11 +163,12 @@ Done
 <p>Static fields offer another way to share data between
 threads. Here’s the same example with <code>done</code> as a
 static field:</p>
+<p>然而，静态属性的数据共享则是另一回事。下面是一个演示静态属性的示例：</p>
 
 <pre class="sh_csharp">
 class ThreadTest 
 {
-  static bool done;    // Static fields are shared between all threads
+  static bool done;    // Static fields are shared between all threads | 静态字段被所有线程共享
  
   static void Main()
   {
@@ -175,11 +184,15 @@ class ThreadTest
 </pre>
 
 <p>Both of these examples illustrate another key concept:
-that of <a href="part2.aspx#_Thread_Safety">thread safety</a> (or rather, lack of it!)
+that of <a href="part2.html#_Thread_Safety">thread safety</a> (or rather, lack of it!)
 The output is actually indeterminate: it’s possible (though unlikely) that “Done”
-could be printed twice. If, however, we swap the order of statements in the <code>Go</code> method, the odds of “Done” being printed twice go up
+could be printed twice. If, however, we swap the order of statements in the
+<code>Go</code> method, the odds of “Done” being printed twice go up
 dramatically:</p>
 
+<p>上面两个示例演示了另一个重要的概念：<a href="part2.html#_Thread_Safety">线程安全</a>
+（或者说，它们都是线程不安全的），因为程序的输出是不确定的：存在”Done”被打印两次的可能性（尽管很小）。
+然而，我们将 <code>Go()</code> 方法中的语句颠倒一下顺序的话，打印两次”Done”的可能性就陡然大了起来。</p>
 <pre class="sh_csharp">
 static void Go()
 {
@@ -190,10 +203,16 @@ static void Go()
 <pre class="output">Done
 Done   <i>(usually!)</i></pre>
 
-<p>The problem is that one thread can be evaluating the <code>if</code> statement right as the other thread is executing the <code>WriteLine</code> statement — before it’s had a chance to set <code>done</code> to true.</p>
+<p>The problem is that one thread can be evaluating the <code>if</code> statement rightas the other thread is executing the
+<code>WriteLine</code> statement — before it’s had a chance to set <code>done</code> to true.</p>
+<p>问题就在于：一个线程在执行 <code>WriteLine</code> 的时候——此时线程还没来得及改变 <code>done</code>
+的值——而正在这个时刻，另一个线程仍然可以将 <code>if</code> 语句判断为真。</p>
 
-<p>The remedy is to obtain an <a href="part2.aspx#_Locking">exclusive
-lock</a> while reading and writing to the common field. C# provides the <a href="part2.aspx#_Locking">lock</a> statement for just this purpose:</p>
+<p>The remedy is to obtain an <a href="part2.html#_Locking">exclusive
+lock</a> while reading and writing to the common field. C# provides the <a href="part2.html#_Locking">lock</a>
+statement for just this purpose:</p>
+<p>解决的方法就是读写共有数据时加一个<a href="part2.html#_Locking">独占锁</a>。
+C#中的 <a href="part2.html#_Locking">lock</a> 关键词正是基于此种目的。</p>
 
 <pre class="sh_csharp">
 class ThreadSafe 
@@ -218,24 +237,28 @@ class ThreadSafe
 </pre>
 
 <p>When two threads simultaneously contend a lock (in this
-case, <code>locker</code>), one thread waits, or <a href="part2.aspx#_Blocking">blocks</a>, until the lock becomes available. In this case,
+case, <code>locker</code>), one thread waits, or <a href="part2.html#_Blocking">blocks</a>, until the lock becomes available. In this case,
 it ensures only one thread can enter the critical section of code at a time,
 and “Done” will be printed just once. Code that's protected in such a manner — from
 indeterminacy in a multithreading context — is called <a href="part2.aspx#_Thread_Safety">thread-safe</a>.</p>
 
+<p>两个线程同时竞争一个<code>锁</code>的时候，一个线程处于等待或者阻塞状态，直到锁解除。
+这种机制保证了在某一个时间只有一个线程进入临界区（critical section），在这个示例中，”Done”将只会打印一次。
+像这种在多线程编程中避免不确定性的方式就叫“线程安全”。</p>
 <p class="warning">Shared data is the primary cause of complexity and
 obscure errors in multithreading. Although often essential, it pays to keep it
 as simple as possible. </p>
+<p class="warning">数据共享是多线程如此复杂和各种隐蔽错误的主要原因。尽管在多数情况下很重要，我们还是尽量将多线程处理得越简单越好。</p>
 
 <p>A thread, while <i>blocked</i>,
 doesn't consume CPU resources.</p>
-
+<p>一个<code>阻塞</code>的线程是不消耗CPU资源的。</p>
 <h2>
-	<a name="_Join_and_Sleep">Join and Sleep</a>
+	<a name="_Join_and_Sleep">Join and Sleep | Join 和 Sleep</a>
 </h2>
 
 <p>You can wait for another thread to end by calling its <code>Join</code> method. For example:</p>
-
+<p>调用线程的 <code>Join()</code> 方法，可以等待线程执行完成后再做其他操作。比方说：</p>
 <pre class="sh_csharp">
 static void Main()
 {
@@ -254,19 +277,23 @@ static void Go()
 <p>This prints “y” 1,000 times, followed by “Thread t has
 ended!” immediately afterward. You can include a timeout when calling <code>Join</code>, either in milliseconds or as a <code>TimeSpan</code>.
 It then returns <code>true</code> if the thread ended or <code>false</code> if it timed out.</p>
-
+<p>程序打印1000次’y’后，紧接着打印一行” Thread t has ended!”。你也可以给 <code>Join</code> 方法指定一个超时参数，毫秒数或 <code>TimeSpan</code> 都可以，
+这种情况下如果线程正常结束，<code>Join</code>方法返回 <code>true</code>，超时则返回 <code>false</code>。</p>
 <p>
 	<code><a name="_Sleep_And_Yield">Thread.Sleep</a></code> pauses the current
 thread for a specified period:</p>
-
+<p>
+<code><a name="_Sleep_And_Yield">Thread.Sleep</a></code> 方法将当前线程暂停一段时间：</p>
+</p>
 <pre class="sh_csharp">
-Thread.Sleep (TimeSpan.FromHours (1));  // sleep for 1 hour
-Thread.Sleep (500);                     // sleep for 500 milliseconds
+Thread.Sleep (TimeSpan.FromHours (1));  // sleep for 1 hour | 休眠1小时
+Thread.Sleep (500);                     // sleep for 500 milliseconds | 休眠500毫秒
 </pre>
 
-<p>While waiting on a <code>Sleep</code> or <code>Join</code>, a thread is <i><a href="part2.aspx#_Blocking">blocked</a></i> and
+<p>While waiting on a <code>Sleep</code> or <code>Join</code>, a thread is <i><a href="part2.html#_Blocking">blocked</a></i> and
 so does not consume CPU resources.</p>
 
+<p>线程调用 <code>Sleep</code> 或 <code>Join</code> 后，处于<i><a href="part2.html#_Blocking">阻塞状态</a></i>，因此不耗CPU资源。</p>
 <div class="note">
 	<p>
 		<code>Thread.Sleep(0)</code> relinquishes the
@@ -274,15 +301,25 @@ thread’s current time slice immediately, voluntarily handing over the CPU to
 other threads. Framework 4.0’s new <code>Thread.Yield()</code>
 method does the same thing — except that it relinquishes only to threads running
 on the <em>same</em> processor.</p>
+<p>
+线程调用 <code>Sleep(0)</code> 后，立即将当前时间片交出，自愿将CPU交给其他线程。
+.Net 4.0框架中的新方法 <code>Thread.Yield()</code> 也具有同样的功能，
+不同之处在于 <code>Yield</code> 交出的CPU资源只能用于<em>同一颗</em>CPU的其他线程使用。
+</p>
 	<p>
 		<code>Sleep(0)</code> or <code>Yield</code>
 is occasionally useful in production code for advanced performance tweaks. It’s
-also an excellent diagnostic tool for helping to uncover <a href="part2.aspx#_Thread_Safety">thread safety</a> issues: if inserting <code>Thread.Yield()</code> anywhere in your code makes or breaks the
+also an excellent diagnostic tool for helping to uncover <a href="part2.html#_Thread_Safety">thread safety</a>
+issues: if inserting <code>Thread.Yield()</code> anywhere in your code makes or breaks the
 program, you almost certainly have a bug.</p>
+<p><code>Sleep(0)</code> 或 <code>Yield</code> 在生产代码有更高的性能要求时有一些用处，
+它也是一种诊断<a href="part2.html#_Thread_Safety">线程安全</a>问题的优秀工具：如果你在程序中到处插入
+<code>Thread.Yield()</code> 中断程序，那你的程序也好不到哪里去了。
+</p>
 </div>
 
 <h2>
-	<a name="_How_Threading_Works">How Threading Works</a>
+	<a name="_How_Threading_Works">How Threading Works | 线程是如何工作的</a>
 </h2>
 
 
@@ -291,6 +328,9 @@ scheduler, a function the CLR typically delegates to the operating system. A
 thread scheduler ensures all active threads are allocated appropriate execution
 time, and that threads that are waiting or blocked (for instance, on an
 exclusive lock or on user input)  do not consume CPU time.</p>
+<p>多线程由一个内部的线程调度器来管理，这是CLR委派给操作系统的任务。
+线程调度器保证所有活动的线程都恰当地分配了执行时间，
+保证处于等待或阻塞状态下的进程不消耗CPU时间。</p>
 
 <p>On a single-processor computer, a thread scheduler
 performs <i>time-slicing</i> — rapidly switching
@@ -298,20 +338,26 @@ execution between each of the active threads. Under Windows, a time-slice is
 typically in the tens-of-milliseconds region — much larger than the CPU overhead
 in actually switching context between one thread and another (which is
 typically in the few-microseconds region).</p>
+<p>在单核处理器的电脑中，线程调度器执行<i>时间片</i>——在活动线程之间快速地切换执行顺序。
+Windows环境下，一个时间切片大约是10毫秒左右。……</p>
 
 <p>On a multi-processor computer, multithreading is
 implemented with a mixture of time-slicing and genuine concurrency, where
 different threads run code simultaneously on different CPUs. It’s almost
 certain there will still be some time-slicing, because of the operating system’s
 need to service its own threads — as well as those of other applications.</p>
+<p>在多核处理器的电脑中，多线程是时间切片和真正的并发操作混合组成。
+不同的线程在不同CPU上真正实现了同时运行。几乎可以肯定的是，因为操作系统必须满足它自己的线程，
+所以存在相同的时间切片。这跟其他的应用程序是一样的道理。</p>
 
 <p>A thread is said to be <i>preempted</i>
 when its execution is interrupted due to an external factor such as
 time-slicing. In most situations, a thread has no control over when and where
 it’s preempted.</p>
+<p>据说被外部因素（比如说时间片）中断的线程具有<i>较高</i>的优先级。在大多数情况下，……</p>
 
 <h2>
-	<a name="_Threads_vs_Processes">Threads vs Processes</a>
+	<a name="_Threads_vs_Processes">Threads vs Processes | 线程 VS 进程</a>
 </h2>
 
 <p>A thread is analogous to the operating system process in
@@ -322,9 +368,13 @@ particular, threads share (heap) memory with other threads running in the same
 application. This, in part, is why threading is useful: one thread can fetch
 data in the background, for instance, while another thread can display the data
 as it arrives.</p>
-
+<p>线程就是应用程序的“进程”，这跟进程与操作系统的关系类似。
+进程是平行地在电脑上运行的，而线程是平行地在某个进程中运行。
+进程是绝对的相对独立，线程则具有一定程度的独立性。
+最突出的一点是同一进程内的线程共享(堆)内存，这也正是线程之所以用途很大的部分原因：
+一个线程在后台读取数据，另一个线程可以显示数据。</p>
 <h2>
-	<a name="_Threadings_Uses_and_Misuses">Threading’s Uses and Misuses</a>
+	<a name="_Threadings_Uses_and_Misuses">Threading’s Uses and Misuses | 线程的正确用法和错误用法</a>
 </h2>
 
 <p>Multithreading has many uses; here are the most common:</p>
@@ -352,16 +402,20 @@ number of different algorithms in parallel that all solve the same task.
 Whichever one finishes first “wins” — this is effective when you can’t know ahead
 of time which algorithm will execute fastest.</dd>
 	<dt>Allowing requests to be processed simultaneously</dt>
+	<dt>同步处理请求</dt>
 	<dd>On a server, client requests can arrive concurrently and
 so need to be handled in parallel (the .NET Framework creates threads for this
 automatically if you use ASP.NET, WCF, Web Services, or Remoting). This can
 also be useful on a client (e.g., handling peer-to-peer networking — or even
 multiple requests from the user).</dd>
+<dd>服务器接受用户请求是同时的，这就要求服务器必须同时处理这些请求（如果使用ASP.NET、WCF、Web Services或者Remoting开发的话，.NET框架会自动创建线程来处理这些问题）。这一点在客户端非常有用（如处理P2P网络乃至用户多重请求）。</dd>
 </dl>
 
-<p>With technologies such as ASP.NET and WCF, you may be <a href="part2.aspx#_Thread_Safety_in_Application_Servers">unaware that multithreading is even taking place</a> — unless
-you access shared data (perhaps via static fields) without appropriate <a href="part2.aspx#_Locking">locking</a>, <a href="part2.aspx#_Thread_Safety_in_Application_Servers">running afoul of
+<p>With technologies such as ASP.NET and WCF, you may be <a href="part2.html#_Thread_Safety_in_Application_Servers">unaware that multithreading is even taking place</a> — unless
+you access shared data (perhaps via static fields) without appropriate <a href="part2.html#_Locking">locking</a>, <a href="part2.html#_Thread_Safety_in_Application_Servers">running afoul of
 thread safety.</a></p>
+<p>配合ASP .NET和WCF等技术，你或许根本<a href="part2.html#_Thread_Safety_in_Application_Servers">不会意识到多线程的存在</a>，
+除非你在读写共享数据（可能通过静态属性）时没有正确使用 <a href="part2.html#_Locking">locking</a> 或者<a href="part2.html#_Thread_Safety_in_Application_Servers">其他线程不安全的作法</a>。</p>
 
 <p>Threads also come with strings attached. The biggest is
 that multithreading can increase complexity. Having lots of threads does not in
