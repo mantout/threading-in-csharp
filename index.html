@@ -321,8 +321,7 @@ scheduler, a function the CLR typically delegates to the operating system. A
 thread scheduler ensures all active threads are allocated appropriate execution
 time, and that threads that are waiting or blocked (for instance, on an
 exclusive lock or on user input)  do not consume CPU time.</p>
-<p>一个内部的线程调度器来管理多线程，这是典型的 CLR 委派给操作系统的任务。线程调度器保证所有活动的线程都恰当地分配了执行时间，
-保证处于等待或阻塞状态下的进程不消耗CPU时间。</p>
+<p>多线程由一个内部的线程调度器来管理，这是典型的 CLR 委派给操作系统的任务。线程调度器保证所有活动的线程都恰当地分配了执行时间，保证处于等待或阻塞状态下的进程不消耗CPU时间。</p>
 
 <p>On a single-processor computer, a thread scheduler
 performs <i>time-slicing</i> — rapidly switching
@@ -330,23 +329,21 @@ execution between each of the active threads. Under Windows, a time-slice is
 typically in the tens-of-milliseconds region — much larger than the CPU overhead
 in actually switching context between one thread and another (which is
 typically in the few-microseconds region).</p>
-<p>在单核处理器的电脑中，线程调度器执行<i>时间片</i>——在活动线程之间快速地切换执行顺序。
-Windows环境下，一个时间切片大约是10毫秒左右。……</p>
+<p>在单处理器的电脑中，线程调度器是执行<i>时间切片</i>——在活动线程之间快速地切换执行顺序——来管理多线程。Windows环境下，一个时间片大约是数10毫秒，这个时间大大超出了
+CPU 在不同线程间切换环境时的时间消耗——大约是几毫秒——的上限。</p>
 
 <p>On a multi-processor computer, multithreading is
 implemented with a mixture of time-slicing and genuine concurrency, where
 different threads run code simultaneously on different CPUs. It’s almost
 certain there will still be some time-slicing, because of the operating system’s
 need to service its own threads — as well as those of other applications.</p>
-<p>在多核处理器的电脑中，多线程是时间切片和真正的并发操作混合组成。
-不同的线程在不同CPU上真正实现了同时运行。几乎可以肯定的是，因为操作系统必须满足它自己的线程，
-所以存在相同的时间切片。这跟其他的应用程序是一样的道理。</p>
+<p>在多处理器的电脑中，多线程是通过时间切片和真正的并发混合实现的。不同线程在不同 CPU 上实现了真正的同时运行。几乎可以肯定的是，时间切片仍然存在，因为操作系统必须满足它自己的线程，这跟其他的应用程序是一样的道理。</p>
 
 <p>A thread is said to be <i>preempted</i>
 when its execution is interrupted due to an external factor such as
 time-slicing. In most situations, a thread has no control over when and where
 it’s preempted.</p>
-<p>据说被外部因素（比如说时间片）中断的线程具有<i>较高</i>的优先级。在大多数情况下，……</p>
+<p>据说被外部因素（如时间切片）中断的线程具有<i>较高</i>的优先级。在大多数情况下，线程无法控制自身在什么时候、何种情况下具有这种较高的优先级。</p>
 
 <h2>
 	<a name="_Threads_vs_Processes">Threads vs Processes | 线程 VS 进程</a>
@@ -360,32 +357,35 @@ particular, threads share (heap) memory with other threads running in the same
 application. This, in part, is why threading is useful: one thread can fetch
 data in the background, for instance, while another thread can display the data
 as it arrives.</p>
-<p>线程就是应用程序的“进程”，这跟进程与操作系统的关系类似。
-进程是平行地在电脑上运行的，而线程是平行地在某个进程中运行。
-进程是绝对的相对独立，线程则具有一定程度的独立性。
-最突出的一点是同一进程内的线程共享(堆)内存，这也正是线程之所以用途很大的部分原因：
-一个线程在后台读取数据，另一个线程可以显示数据。</p>
+<p>线程就是应用程序的“进程”，这跟进程与操作系统的关系类似。进程是并行地运行在在电脑上，而线程是并行地运行在<em>某个进程中</em>。进程是绝对的相对独立，线程则具有一定程度的独立性。最突出的一点就是同一进程内的线程共享(堆)内存，而这也正是线程之所以用途很大的部分原因：比如说，一个线程在后台取数据，另一个线程可以显示数据。</p>
 <h2>
-	<a name="_Threadings_Uses_and_Misuses">Threading’s Uses and Misuses | 线程的正确用法和错误用法</a>
+	<a name="_Threadings_Uses_and_Misuses">Threading’s Uses and Misuses | 线程的好处和缺点</a>
 </h2>
 
 <p>Multithreading has many uses; here are the most common:</p>
-
+<p>使用多线程有很多好处，下面是一些最常用的：</p>
 <dl>
 	<dt>Maintaining a responsive user interface</dt>
+	<dt>维持UI的响应性</dt>
 	<dd>By running time-consuming tasks on a parallel “worker”
 thread, the main UI thread is free to continue processing keyboard and mouse
 events.</dd>
+    <dd>将十分耗时的任务交给并行线程执行，使主界面能够处理其他键盘和鼠标事件。</dd>
 	<dt>Making efficient use of an otherwise blocked CPU</dt>
+	<dt>充分利用闲置的CPU</dt>
 	<dd>Multithreading is useful when a thread is awaiting a
 response from another computer or piece of hardware. While one thread is
 blocked while performing the task, other threads can take advantage of the
 otherwise unburdened computer.</dd>
+    <dd>线程阻塞的情况下，多线程将十分有用。一个线程执行任务时发生阻塞，或许在等候其他主机或硬件的响应，其他线程就可以利用闲置的CPU资源。</dd>
 	<dt>Parallel programming</dt>
+	<dt>并行编程</dt>
 	<dd>Code that performs intensive calculations can execute
 faster on multicore or multiprocessor computers if the workload is shared among
 multiple threads in a “divide-and-conquer” strategy (see <a href="part5.html">Part 5</a>).</dd>
+    <dd>采用“分治策略”（见 <a href="part5.html">Part 5</a>）将工作量分担到各个线程来完成，在多核/多处理器的电脑上完成海量计算任务往往有很好的表现。</dd>
 	<dt>Speculative execution</dt>
+	<dt>预测执行</dt>
 	<dd>On multicore machines, you can sometimes improve
 performance by predicting something that might need to be done, and then doing
 it ahead of time. <a href="http://www.linqpad.net/">LINQPad</a> uses this
@@ -393,6 +393,8 @@ technique to speed up the creation of new queries. A variation is to run a
 number of different algorithms in parallel that all solve the same task.
 Whichever one finishes first “wins” — this is effective when you can’t know ahead
 of time which algorithm will execute fastest.</dd>
+    <dd>在多核机器上，你可以通过预测哪些事情需要做并提前完成它们来提高性能。<a href="http://www.linqpad.net/">LINQPad</a>
+	正是使用这种技术提高创建查询的速度。它的独到之处在于并行地运行多个算法解决同一个问题，任何一个算法结束运行，问题就解决了。这是非常有效率的做法，因为你不可能提前知道哪个算法最先完成任务。</dd>
 	<dt>Allowing requests to be processed simultaneously</dt>
 	<dt>同步处理请求</dt>
 	<dd>On a server, client requests can arrive concurrently and
@@ -400,16 +402,14 @@ so need to be handled in parallel (the .NET Framework creates threads for this
 automatically if you use ASP.NET, WCF, Web Services, or Remoting). This can
 also be useful on a client (e.g., handling peer-to-peer networking — or even
 multiple requests from the user).</dd>
-<dd>服务器接受用户请求是同时的，这就要求服务器必须同时处理这些请求（如果使用ASP.NET、WCF、Web Services或者Remoting开发的话，
-.NET框架会自动创建线程来处理这些问题）。这一点在客户端非常有用（如处理P2P网络乃至用户多重请求）。</dd>
+<dd>服务器接受用户请求可能是同时的，这就要求服务器必须同时处理这些请求（如果使用ASP.NET、WCF、Web Services 或者 Remoting
+开发的话，.NET框架会自动创建线程来处理这些问题）。这一点在客户端非常有用（如处理P2P网络乃至用户多重请求）。</dd>
 </dl>
 
 <p>With technologies such as ASP.NET and WCF, you may be <a href="part2.html#_Thread_Safety_in_Application_Servers">unaware that multithreading is even taking place</a> — unless
 you access shared data (perhaps via static fields) without appropriate <a href="part2.html#_Locking">locking</a>, <a href="part2.html#_Thread_Safety_in_Application_Servers">running afoul of
 thread safety.</a></p>
-<p>配合ASP .NET和WCF等技术，你或许根本<a href="part2.html#_Thread_Safety_in_Application_Servers">不会意识到多线程的存在</a>，
-除非你在读写共享数据（可能通过静态属性）时没有正确使用 <a href="part2.html#_Locking">locking</a> 
-或者<a href="part2.html#_Thread_Safety_in_Application_Servers">其他线程不安全的作法</a>。</p>
+<p>配合 ASP .NET 和 WCF 等技术，你或许根本<a href="part2.html#_Thread_Safety_in_Application_Servers">不会意识到多线程的存在</a>，除非你在读写共享数据（可能是通过静态属性）时没有正确使用<a href="part2.html#_Locking">锁</a>，或者使用了<a href="part2.html#_Thread_Safety_in_Application_Servers">其他线程不安全的作法</a>。</p>
 
 <p>Threads also come with strings attached. The biggest is
 that multithreading can increase complexity. Having lots of threads does not in
@@ -421,9 +421,16 @@ reason, it pays to keep interaction to a minimum, and to stick to simple and
 proven designs wherever possible. This article focuses largely on dealing with
 just these complexities; remove the interaction and there’s much less to say!</p>
 
-<p class="note">A good strategy is to encapsulate multithreading logic into
+<p>多线程同样也有其缺点。最大的问题就在于多线程增加了程序的复杂性。多线程本身并不会增加复杂性，线程间的交互（典型的例子就是共享数据）才是原因所在。不管是有意还是无意间产生线程间的交互，这种影响都会发生。线程间的交互同样也会延长开发周期，导致系统不稳定或者一些不可预测的
+bug。基于这一点，有必要保持最小限量的线程交互，尽量采用简单的、可靠的设计，减少不必要的交互。本文大部分篇幅正是集中在处理线程引起的复杂性问题上。</p>
+
+<div class="note"><p>A good strategy is to encapsulate multithreading logic into
 reusable classes that can be independently examined and tested. The Framework
 itself offers many higher-level threading constructs, which we cover later. </p>
+
+<p>将多线程逻辑封装到一个独立的、可测试的模块是一个不错的策略。.Net
+框架提供了很多高水平的线程构造方法，在接下来的文章中，我们会陆续介绍。</p>
+</div>
 
 <p>Threading also incurs a resource and CPU cost in
 scheduling and switching threads (when there are more active threads than CPU
@@ -435,6 +442,10 @@ threads executing at once. (In <a href="part4.html#_Signaling_with_Wait_and_Puls
 Wait and Pulse</a>, we describe how to implement a <a href="part4.html#_Wait_Pulse_Producer_Consumer_Queue">producer/consumer queue</a>, which provides
 just this functionality.)</p>
 
+<p>多线程还会导致额外的系统资源的开销。调度和切换线程同样需要系统资源，尤其是活动线程比 CPU
+核心多的情况下。创建/销毁这些额外的资源也是一笔开销。使用多线程不一定会提高程序运行速度，滥用多线程或不恰当地使用多线程甚至会导致程序运行变慢。比方说，涉及到笨重的磁盘
+I/O 操作时，少数几个工作线程顺序执行比 10 个线程同时执行更快。（在 <a href="part4.html#_Signaling_with_Wait_and_Pulse">使用
+Wait 和 Pulse 发信号</a> 一节中，我会介绍一种解决这个问题的方法：<a href="part4.html#_Wait_Pulse_Producer_Consumer_Queue">生产者/消费者队列</a></p>
 <h1>
 	<a name="_Creating_and_Starting_Threads">Creating and Starting Threads | 创建和启动线程</a>
 </h1>
