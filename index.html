@@ -443,7 +443,7 @@ just this functionality.)</p>
 the <code>Thread</code> class’s constructor, passing in a <code>ThreadStart</code> delegate which indicates where execution
 should begin.  Here’s how the <code>ThreadStart</code> delegate
 is defined:</p>
-
+<p>在简介一章，我们介绍过，线程是通过 <code>Thread</code> 类的构造函数来创建的。构造线程时，我们传递一个 <code>ThreadStart</code> 类型的代理给构造函数，这个代理告诉线程从哪里开始执行。<code>ThreadStart</code> 是这样定义的：</p>
 <pre class="sh_csharp">
 public delegate void ThreadStart();
 </pre>
@@ -452,6 +452,7 @@ public delegate void ThreadStart();
 then sets it running. The thread continues until its method returns, at which
 point the thread ends. Here’s an example, using the expanded C# syntax for
 creating a <code>TheadStart</code> delegate:</p>
+<p>调用 <code>Start</code> 后，线程开始运行，直到代理运行结束，线程才终止。下面的示例演示如何使用 C# 的扩展语法创建 <code>ThreadStart</code> 代理：</p>
 
 <pre class="sh_csharp">
 class ThreadTest
@@ -460,8 +461,8 @@ class ThreadTest
   {
     Thread t = new Thread (new ThreadStart (Go));
  
-    t.Start();   // Run Go() on the new thread.
-    Go();        // Simultaneously run Go() in the main thread.
+    t.Start();   // Run Go() on the new thread. | 在新建线程中运行 Go()
+    Go();        // Simultaneously run Go() in the main thread. | 同时在主线程中运行 Go()
   }
  
   static void Go()
@@ -475,17 +476,21 @@ class ThreadTest
 executes <code>Go()</code> — at (much) the same time the main
 thread calls <code>Go()</code>. The result is two near-instant
 hellos.</p>
+<p>在这个示例中，几乎在线程 <code>t</code> 执行 <code>Go()</code> 方法的同时，主线程中也调用了 <code>Go()</code>
+方法，程序的输出是两个 "Hello!"。</p>
 
 <p>A thread can be created more conveniently by specifying
 just a method group — and allowing C# to infer the <code>ThreadStart</code>
 delegate:</p>
+<p>传递方法名能更方便地创建线程，生成 <code>ThreadStart</code> 代理的工作由 C# 完成。</p>
 
 <pre class="sh_csharp">
-Thread t = new Thread (Go);    // No need to explicitly use ThreadStart
+Thread t = new Thread (Go);    // No need to explicitly use ThreadStart | 不必显式地使用 ThreadStart
 </pre>
 
 <p>Another shortcut is to use a lambda expression or
 anonymous method:</p>
+<p>另一个简便方法是使用 lambda 表达式或匿名方法：</p>
 
 <pre class="sh_csharp">
 static void Main()
