@@ -646,7 +646,7 @@ t2
 </pre>
 
 <h2>
-	<a name="_Naming_Threads">Naming Threads | 为线程赋名字</a>
+	<a name="_Naming_Threads">Naming Threads | 为线程命名</a>
 </h2>
 
 <p>Each thread has a <code>Name</code> property
@@ -654,10 +654,13 @@ that you can set for the benefit of debugging. This is particularly useful in
 Visual Studio, since the thread’s name is displayed in the Threads Window and
 Debug Location toolbar. You can set a thread’s name just once; attempts to
 change it later will throw an exception.</p>
+<p>每一个线程都有一个 <code>Name</code> 属性。设置 <code>Name</code> 属性有利于调试程序，尤其是在 Visual Studio
+环境下，因为线程名直观地展示在 Thread Window 窗口和 Debug Location 工具条中。线程名只能设置一次，再次修改会抛出异常。</p>
 
 <p>The static <code>Thread.CurrentThread</code>
 property gives you the currently executing thread. In the following example, we
 set the main thread’s name:</p>
+<p>静态属性 <code>Thread.CurrentThread</code> 返回当前正在执行的线程。在下面的示例中，我们为主线程设置线程名：</p>
 
 <pre class="sh_csharp">
 class ThreadNaming
