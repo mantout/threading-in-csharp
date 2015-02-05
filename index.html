@@ -689,12 +689,16 @@ class ThreadNaming
 application alive for as long as any one of them is running, whereas <i>background threads</i> do not. Once all foreground
 threads finish, the application ends, and any background threads still running
 abruptly terminate.</p>
+<p>显式创建的线程默认是<i>前台线程</i>。只要任何一个前台线程在运行，应用程序就不会终止，而<i>后台线程</i>则不然。当所有前台线程结束时，应用程序就会终止，然而后台线程却仍然在运行。</p>
 
-<p class="note">A thread’s foreground/background status has no relation to its
+<div class="note"><p>A thread’s foreground/background status has no relation to its
 priority or allocation of execution time.</p>
+<p>一个线程是前台线程还是后台线程与它的优先级或分配的执行时间没有联系。</p>
+</div>
 
 <p>You can query or change a thread’s background status using
 its <code>IsBackground</code> property. Here’s an example:</p>
+<p>检查 <code>IsBackground</code> 属性可以知道一个线程是否为后台线程，设置 <code>IsBackground</code> 可以改变线程的后台线程状态。如下所示：</p>
 
 <pre class="sh_csharp">
 class PriorityTest
@@ -712,36 +716,48 @@ class PriorityTest
 thread assumes foreground status and will wait on the <code>ReadLine</code>
 statement for the user to press Enter. Meanwhile, the main thread exits, but
 the application keeps running because a foreground thread is still alive.</p>
+<p>这个程序不带参数运行时，工作线程 <code>worker</code> 为前台线程，它的 <code>ReadLine</code> 语句等待用户按下 Enter
+键，同时主线程退出。但是程序仍然在运行，因为有一个前台线程仍然处于活跃状态。</p>
 
 <p>On the other hand, if an argument is passed to <code>Main()</code>, the worker is assigned background status, and the
 program exits almost immediately as the main thread ends (terminating the <code>ReadLine</code>).</p>
+<p>另一方面，如果传给 <code>Main()</code> 函数一个参数，工作线程 <code>worker</code>
+被赋为后台线程，程序在主线程结束后立刻退出（同时终止了 <code>ReadLine</code>）。</p>
 
 <p>When a process terminates in this manner, any <code>finally</code> blocks in the execution stack of background
 threads are circumvented. This is a problem if your program employs <code>finally</code> (or <code>using</code>) blocks to
 perform cleanup work such as releasing resources or deleting temporary files.
 To avoid this, you can explicitly wait out such background threads upon exiting
 an application. There are two ways to accomplish this:</p>
+<p>进程以这样一种方式结束运行，那么后台线程的执行堆栈上的所有 <code>finally</code> 代码块都将被破坏。如果程序使用 <code>finally</code>
+或者 <code>using</code> 来执行资源释放或删除临时文件，那么你将会遇到一些麻烦。为了避免出现这些问题，你可以明确要求程序在后台线程结束后退出。有两种方法：</p>
 
 <ul>
 	<li>If you’ve created the thread yourself, call <code><a href="#_Join_and_Sleep">Join</a></code> on the thread.</li>
+	<li>线程由你本人创建，调用线程的 <code><a href="#_Join_and_Sleep">Join</a></code> 方法。</li>
 	<li>If you’re on a <a href="#_Thread_Pooling">pooled thread</a>, use
 an <a href="part2.html#_Signaling_with_Event_Wait_Handles">event wait handle</a>.</li>
+    <li>线程是从线程池中取出的，使用<a href="part2.html#_Signaling_with_Event_Wait_Handles">事件等待对象</a>。</li>
 </ul>
 
 <p>In either case, you should specify a timeout, so you can
 abandon a renegade thread should it refuse to finish for some reason. This is
 your backup exit strategy: in the end, you want your application to
 close — without the user having to enlist help from the Task Manager!</p>
+<p>不管哪种方法，你必须指定一个超时参数，以防止线程由于某种原因无法完成执行。这实际上是一个备用的结束策略，你希望程序在用户不必动用任务管理器的情况下结束运行。</p>
 
-<p class="note">If a user uses the Task Manager to forcibly end a .NET
+<div class="note"><p>If a user uses the Task Manager to forcibly end a .NET
 process, all threads “drop dead” as though they were background threads. This
 is observed rather than documented behavior, and it could vary depending on the
 CLR and operating system version.</p>
+<p>如果用户通过任务管理器结束一个 .NET 进程，所有线程都结束了（什么像后台线程是什么意思？）这看起来更像是文档中描述的行为，而且因 CLR 和操作系统而异。</p>
+</div>
 
 <p>Foreground threads don’t require this treatment, but you
 must take care to avoid bugs that could cause the thread not to end. A common
 cause for applications failing to exit properly is the presence of active
 foreground threads.</p>
+<p>前台线程不需要这种处理，但是必须要避免导致线程不能结束的 bug。应用程序不能正常退出的一个常见原因正是活跃的前台线程的存在。</p>
 
 <h2>
 	<a name="_Thread_Priority">Thread Priority | 线程优先级</a>
