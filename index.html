@@ -331,7 +331,7 @@ typically in the tens-of-milliseconds region — much larger than the CPU overhe
 in actually switching context between one thread and another (which is
 typically in the few-microseconds region).</p>
 <p>在单处理器的电脑中，线程调度器是执行<i>时间切片</i>——在活动线程之间快速地切换执行顺序——来管理多线程。Windows环境下，一个时间片大约是数10毫秒，这个时间大大超出了
-CPU 在不同线程间切换环境时的时间消耗——大约是几毫秒——的上限。</p>
+CPU 在不同线程间切换环境时的时间消耗（大约是几毫秒）。</p>
 
 <p>On a multi-processor computer, multithreading is
 implemented with a mixture of time-slicing and genuine concurrency, where
@@ -958,6 +958,7 @@ recycling threads, allowing multithreading to be applied at a very granular
 level without a performance penalty. This is useful when leveraging multicore
 processors to execute computationally intensive code in parallel in
 “divide-and-conquer” style.</p>
+<p>创建一个新线程，操作系统会花费几百微秒用于维护栈，还会占用 1 MB 左右的内存。<i>线程池</i>可以减少这些开销，因为线程池共享和重复利用线程，保证性能的前提下在一个微观层次实现多线程。采用“分治策略”处理大量计算任务时，线程池将发挥重要作用。</p>
 
 <p>The thread pool also keeps a lid on the total number of
 worker threads it will run simultaneously. Too many active threads throttle the
@@ -967,33 +968,45 @@ This makes arbitrarily concurrent applications possible, such as a web server.
 (The <i>asynchronous method pattern</i> is an
 advanced technique that takes this further by making highly efficient use of
 the pooled threads; we describe this in Chapter 23 of <a href="http://www.albahari.com/nutshell/">C# 4.0 in a Nutshell</a>).</p>
+<p class="ch">线程池对同时运行的线程的数量有一个限制。太多线程会给操作系统增加管理任务、降低 CPU
+缓存效率，从而导致系统运行变慢。当线程数量达到上限，新任务必须排队等候其他任务完成后才能继续。线程池的使用使得随意性的并发应用，如网页服务程序，成为可能。
+（<i>异步方法模式</i>这项技术对池线程的使用效率更高，我们会在 <a href="http://www.albahari.com/nutshell/">言简意赅话 C# 4.0</a>
+一书的第 23 章中更深入地讨论这个话题。）</p>
 
 <p>There are a number of ways to enter the thread pool:</p>
+<p>有很多种方法可以进入线程池：</p>
 
 <ul>
-	<li>Via the <a href="part5.html#_The_Parallel_Class">Task Parallel Library</a>
-(from Framework 4.0)</li>
+	<li>Via the <a href="part5.html#_The_Parallel_Class">Task Parallel Library</a> (from Framework 4.0)</li>
+	<li class="ch">通过<a href="part5.html#_The_Parallel_Class">任务并行库(TPL)</a>（从 .NET 4.0 起）</li>
 	<li>By calling <code><a href="#_QueueUserWorkItem">ThreadPool.QueueUserWorkItem</a></code></li>
+	<li class="ch">调用 <code><a href="#_QueueUserWorkItem">ThreadPool.QueueUserWorkItem</a></code> 方法</li>
 	<li>Via <a href="#_Asynchronous_delegates">asynchronous delegates</a></li>
+	<li class="ch">通过<a href="#_Asynchronous_delegates">异步代理</a>机制</li>
 	<li>Via <code><a href="part3.html#_BackgroundWorker">BackgroundWorker</a></code></li>
+	<li class="ch">通过 <code><a href="part3.html#_BackgroundWorker">BackgroundWorker</a></code> 类</li>
 </ul>
 
 <div class="note">
 	<p>The following constructs use the thread pool <em>indirectly</em>:</p>
+	<p class="ch">下面这些方法<em>间接地</em>使用了线程池：</p>
 	<ul>
-		<li>WCF,
-Remoting, ASP.NET, and ASMX Web Services application servers</li>
+		<li>WCF, Remoting, ASP.NET, and ASMX Web Services application servers</li>
+		<li class="ch">WCF, Remoting, ASP.NET, 以及 ASMX Web Services 应用程序服务器</li>
 		<li>
-			<code>
-				<a href="part3.html#_Multithreaded_Timers">System.Timers.Timer</a>
-			</code>
-and <code><a href="part3.html#_Multithreaded_Timers">System.Threading.Timer</a></code></li>
-		<li>Framework
-methods that end in <em>Async</em>, such as those on <code>WebClient</code>
-(the <em><a href="part3.html#_Event-Based_Asynchronous_Pattern">event-based
-asynchronous pattern</a></em>), and most <code>Begin</code><span class="Replaceable">XXX</span> methods (the <em>asynchronous programming model</em>
-pattern)</li>
+		  <code><a href="part3.html#_Multithreaded_Timers">System.Timers.Timer</a></code> and
+		  <code><a href="part3.html#_Multithreaded_Timers">System.Threading.Timer</a></code></li>
+        <li class="ch">
+		  <code><a href="part3.html#_Multithreaded_Timers">System.Timers.Timer</a></code> 类和
+		  <code><a href="part3.html#_Multithreaded_Timers">System.Threading.Timer</a></code> 类</li>
+		<li>Framework methods that end in <em>Async</em>, such as those on <code>WebClient</code>
+		  (the <em><a href="part3.html#_Event-Based_Asynchronous_Pattern">event-based asynchronous pattern</a></em>),
+		  and most <code>Begin</code><span class="Replaceable">XXX</span> methods (the <em>asynchronous programming model</em> pattern)</li>
+		<li class="ch">.NET 中以 <em>Async</em> 结尾的方法（<em><a href="part3.html#_Event-Based_Asynchronous_Pattern">基于事件的异步模式</a></em>）, 像
+		  <code>WebClient</code> 类中的某些方法；以及大多数形如 <code>Begin</code><span class="Replaceable">XXX</span>
+		  的方法（<em>异步编程模型</em> 模式)</li>
 		<li>PLINQ</li>
+		<li class="ch">PLINQ</li>
 	</ul>
 </div>
 
@@ -1006,27 +1019,30 @@ on a pooled thread.</p>
 
 <div class="note">
 	<p>There are a few things to be wary of when using pooled threads:</p>
+	<p class="ch">使用池线程没有太多需要操心的事情：</p>
 	<ul>
-		<li>You
-cannot set the <code>Name</code> of a pooled thread, making
-debugging more difficult (although you can attach a description when debugging
-in Visual Studio’s Threads window).</li>
-		<li>Pooled
-threads are always <i><a href="#_Foreground_and_Background_Threads">background
-threads</a></i> (this is usually not a problem).</li>
-		<li>
-			<a href="part2.html#_Blocking">Blocking</a> a pooled thread may trigger additional latency
-in the early life of an application unless you call <code>ThreadPool.SetMinThreads</code>
-(see <a href="#_Optimizing_the_Thread_Pool">Optimizing the Thread Pool</a>). </li>
+		<li>You cannot set the <code>Name</code> of a pooled thread, making
+		  debugging more difficult (although you can attach a description when debugging
+		  in Visual Studio’s Threads window).</li>
+		<p class="ch">不能设置池线程的 <code>Name</code> 属性，这给调试带来了麻烦，但是在 Visual Studio
+		  的线程窗口中可以给线程附加一个描述。</p>
+		<li>Pooled threads are always <i><a href="#_Foreground_and_Background_Threads">background
+		  threads</a></i> (this is usually not a problem).</li>
+		<p class="ch">池线程永远是<i><a href="#_Foreground_and_Background_Threads">后台线程</a></i>，这不是一个bug。</p>
+		<li><a href="part2.html#_Blocking">Blocking</a> a pooled thread may trigger additional latency
+		  in the early life of an application unless you call <code>ThreadPool.SetMinThreads</code>
+		  (see <a href="#_Optimizing_the_Thread_Pool">Optimizing the Thread Pool</a>).</li>
+		<p class="ch"><a href="part2.html#_Blocking">阻塞</a>一个池线程可能会在应用程序生命周期的早期产生一些负面影响，除非你调用
+		  <code>ThreadPool.SetMinThreads</code> 方法（见<a href="#_Optimizing_the_Thread_Pool">线程池优化</a>）。</p>
 	</ul>
 	<p>You are free to change the <a href="#_Thread_Priority">priority</a>
-of a pooled thread — it will be restored to normal when released back to the
-pool.</p>
+	  of a pooled thread — it will be restored to normal when released back to the pool.</p>
+	<p class="ch">你可以随意改变池线程的<a href="#_Thread_Priority">优先级</a>，返回线程池后它会自动恢复正常的优先级。</p>
 </div>
 
 <p>You can query if you’re currently executing on a pooled
 thread via the property <code>Thread.CurrentThread.IsThreadPoolThread</code>.</p>
-
+<p class="ch">根据 <code>Thread.CurrentThread.IsThreadPoolThread</code> 属性可以判断当前线程是否为池线程。</p>
 <h2>
 	<a name="_Entering_the_Thread_Pool_via_TPL">Entering the Thread Pool via TPL | 通过 TPL 进入线程池</a>
 </h2>
