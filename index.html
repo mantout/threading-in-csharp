@@ -446,7 +446,7 @@ just this functionality.)</p>
 <p>多线程还会导致额外的系统资源的开销。调度和切换线程同样需要系统资源，尤其是活动线程比 CPU
 核心多的情况下。创建/销毁这些额外的资源也是一笔开销。使用多线程不一定会提高程序运行速度，滥用多线程或不恰当地使用多线程甚至会导致程序运行变慢。比方说，涉及到笨重的磁盘
 I/O 操作时，少数几个工作线程顺序执行比 10 个线程同时执行更快。（在 <a href="part4.html#_Signaling_with_Wait_and_Pulse">使用
-Wait 和 Pulse 发信号</a> 一节中，我会介绍一种解决这个问题的方法：<a href="part4.html#_Wait_Pulse_Producer_Consumer_Queue">生产者/消费者队列</a></p>
+Wait 和 Pulse 发信号</a> 一节中，我会介绍一种解决这个问题的方法：<a href="part4.html#_Wait_Pulse_Producer_Consumer_Queue">生产者/消费者队列</a>。</p>
 <h1>
 	<a name="_Creating_and_Starting_Threads">Creating and Starting Threads | 创建和启动线程</a>
 </h1>
@@ -778,6 +778,7 @@ foreground threads.</p>
 <p>A thread’s <code>Priority</code> property
 determines how much execution time it gets relative to other active threads in
 the operating system, on the following scale:</p>
+<p>一个线程的 <code>Priority</code> 属性决定了操作系统分配给它的执行时间与其他活跃线程相比是更多还是更少，具体说来是这样规定的：</p>
 
 <pre class="sh_csharp">
 enum ThreadPriority { Lowest, BelowNormal, Normal, AboveNormal, Highest }
@@ -785,14 +786,17 @@ enum ThreadPriority { Lowest, BelowNormal, Normal, AboveNormal, Highest }
 
 <p>This becomes relevant only when multiple threads are
 simultaneously active.</p>
+<p>只有在同时活跃多个线程的情况下，这个相对值才有意义。</p>
 
-<p class="warning">Think carefully before elevating a thread’s priority — it
+<div class="warning"><p>Think carefully before elevating a thread’s priority — it
 can lead to problems such as resource starvation for other threads.</p>
-
+<p>提升线程的优先级时，必须要仔细考量一下，不能出现其他线程没有资源分配的情况。</p>
+</div>
 <p>Elevating a thread’s priority doesn’t make it capable of
 performing real-time work, because it’s still throttled by the application’s
 process priority. To perform real-time work, you must also elevate the process
 priority using the <code>Process</code> class in <code>System.Diagnostics</code> (we didn’t tell you how to do this):</p>
+<p>提升线程的优先级，并不意思着它就能实时地工作，它同样受限于所在进程的优先级。使用 <code>System.Diagnostics.Process</code> 类提升了相应进程的优先级后，线程才能实时工作。</p>
 
 <pre class="sh_csharp">
 using (Process p = Process.GetCurrentProcess())
@@ -808,8 +812,10 @@ your program enters an accidental infinite loop, you might find even the
 operating system locked out, with nothing short of the power button left to
 rescue you! For this reason, <code>High</code> is usually the
 best choice for real-time applications.</p>
+<p><code>ProcessPriorityClass.High</code> 实际上是仅次于最高优先级 <code>Realtime</code> 的优先级。将一个进程设为 <code>Realtime</code>
+意味着你告诉操作系统，你决不会把 CPU 时间交给其他进程。一旦程序陷入死循环，你会发现，连操作系统都无能为力了，最后只剩下按电源开关一个办法。正因为如此，<code>High</code> 往往是实时应用程序最好的选择。</p>
 
-<p class="warning">If your real-time application has a user interface,
+<div class="warning"><p>If your real-time application has a user interface,
 elevating the process priority gives screen updates excessive CPU time, slowing
 down the entire computer (particularly if the UI is complex). Lowering the main
 thread’s priority in conjunction with raising the process’s priority ensures
@@ -820,6 +826,10 @@ as a whole. An ideal solution is to have the real-time worker and user
 interface run as separate applications with different process priorities,
 communicating via Remoting or memory-mapped files. Memory-mapped files are
 ideally suited to this task; we explain how they work in Chapters 14 and 25 of <a href="http://www.albahari.com/nutshell/">C# 4.0 in a Nutshell</a>.</p>
+<p>如果你的实时应用程序拥有用户界面(UI)，提升进程的优先级将会使得屏幕更新拥有过多的 CPU
+时间，整个电脑运行都会变慢，尤其是 UI 相当复杂的情况下。降低主线程的优先级的同时提升进程的优先级，这种做法可以保证应用程序不会被屏幕重绘挤占资源，但仍然不能解决其他进程无资源可分配的问题。因为操作系统还是把绝大多数资源分配给一个进程。一个较理想的解决方案就是，将实时工作和 UI
+分离成两个单独的程序，为他们赋不同的优先级。两个进程通过远程或者内存映射文件通信。内存映射文件完美地解决了这个问题。我会在 <a href="http://www.albahari.com/nutshell/">言简意赅话 C# 4.0</a> 一书的第 14 章和 25 章中介绍这个话题。</p>
+</div>
 
 <p>Even with an elevated process priority, there’s a limit to
 the suitability of the managed environment in handling hard real-time
@@ -827,6 +837,7 @@ requirements. In addition to the issues of latency introduced by automatic garba
 collection, the operating system may present additional challenges — even for
 unmanaged applications — that are best solved with dedicated hardware or a
 specialized real-time platform.</p>
+<p>即使是具有较高优先级的进程，在托管环境下处理硬实时请求时仍然存在一些兼容性问题。此外，操作系统还要面临很多挑战，如垃圾自动回收机制的引入而导致的一些潜在问题，这就涉及专用硬件或特殊的实时平台。</p>
 
 <h2>
 	<a name="_Exception_Handling">Exception Handling | 异常处理</a>
