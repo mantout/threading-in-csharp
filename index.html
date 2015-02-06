@@ -846,6 +846,7 @@ specialized real-time platform.</p>
 <p>Any <code>try</code>/<code>catch</code>/<code>finally</code> blocks in scope when a thread is created are of no
 relevance to the thread when it starts executing. Consider the following
 program:</p>
+<p>线程开始执行后，与它在同一个作用域内的 <code>try</code>/<code>catch</code>/<code>finally</code> 代码块就跟线程没有关系了。琢磨一下这个示例：</p>
 
 <pre class="sh_csharp">
 public static void Main()
@@ -857,11 +858,12 @@ public static void Main()
   catch (Exception ex)
   {
     // We'll never get here!
+    // 程序不会运行到这里！
     Console.WriteLine ("Exception!");
   }
 }
  
-static void Go() { throw null; }   // Throws a NullReferenceException
+static void Go() { throw null; }   // Throws a NullReferenceException | 抛出 NullReferenceException 异常
 </pre>
 
 <p>The <code>try</code>/<code>catch</code>
@@ -869,9 +871,11 @@ statement in this example is ineffective, and the newly created thread will be
 encumbered with an unhandled <code>NullReferenceException</code>.
 This behavior makes sense when you consider that each thread has an independent
 execution path.</p>
+<p>这个例子中的 <code>try</code>/<code>catch</code> 代码块是无效的，新创建的线程被一个没有处理的 <code>NullReferenceException</code>
+异常中断。只要想想，每个线程都拥有独立的执行路径，你就会觉得出现这种现象很合情合理。</p>
 
 <p>The remedy is to move the exception handler into the <code>Go</code> method:</p>
-
+<p>将异常处理挪到 <code>Go</code> 方法中就可以解决这个问题。</p>
 <pre class="sh_csharp">
 public static void Main()
 {
@@ -883,13 +887,14 @@ static void Go()
   try
   {
     // ...
-    throw null;    // The NullReferenceException will get caught below
+    throw null;    // The NullReferenceException will get caught below | NullReferenceException 异常在下面捕捉得到
     // ...
   }
   catch (Exception ex)
   {
     // Typically log the exception, and/or signal another thread
     // that we've come unstuck
+    // 典型的做法是记录这次异常，和/或者向其他线程发消息：我卡住了！
     // ...
   }
 }
@@ -899,6 +904,7 @@ static void Go()
 in production applications — just as you do (usually at a higher level, in the
 execution stack) on your main thread. An unhandled exception causes the whole
 application to shut down. With an ugly dialog!</p>
+<p>正如在生产环境中为主线程编写异常处理事件一样，你需要在每一个线程编上做同样的事情。一个未处理的异常会导致程序异常退出，还弹出一个丑陋的对话框。</p>
 
 <p class="note">In writing such exception handling blocks, rarely would you <em>ignore</em>
 the error: typically, you’d log the details of the exception, and then perhaps
