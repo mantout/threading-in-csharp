@@ -906,41 +906,45 @@ execution stack) on your main thread. An unhandled exception causes the whole
 application to shut down. With an ugly dialog!</p>
 <p>正如在生产环境中为主线程编写异常处理事件一样，你需要在每一个线程编上做同样的事情。一个未处理的异常会导致程序异常退出，还弹出一个丑陋的对话框。</p>
 
-<p class="note">In writing such exception handling blocks, rarely would you <em>ignore</em>
+<div class="note"><p>In writing such exception handling blocks, rarely would you <em>ignore</em>
 the error: typically, you’d log the details of the exception, and then perhaps
 display a dialog allowing the user to automatically submit those details to
 your web server. You then might shut down the application — because it’s possible
 that the error corrupted the program’s state. However, the cost of doing so is
 that the user will lose his recent work — open documents, for instance.</p>
-
+<p>在编写异常处理代码时，你肯定不会对产生的错误视而不见。典型的做法是将异常详情记录下来，或许还会弹出对话框提示用户将异常上传至服务器，最后，程序会被关闭，因为程序已经被破坏无法继续运行。但是用户会丢失最近的工作，比方说打开的文件等。</p>
+</div>
 <div class="warning">
 	<p>The “global” exception handling events for WPF and
 Windows Forms applications (<code>Application.DispatcherUnhandledException</code>
 and <code>Application.ThreadException</code>) fire only for
 exceptions thrown on the main UI thread. You still must handle exceptions on
 worker threads manually.</p>
+<p>WPF 程序和窗体应用程序的“全局”异常处理事件（<code>Application.DispatcherUnhandledException</code>
+和 <code>Application.ThreadException</code>）只处理主 UI 线程抛出的异常。工作线程的异常处理工作仍然需要手动维护。</p>
 	<p>
 		<code>AppDomain.CurrentDomain.UnhandledException</code>
 fires on any unhandled exception, but provides no means of preventing the
 application from shutting down afterward.</p>
-
+<p><code>AppDomain.CurrentDomain.UnhandledException</code> 可以处理任何未被处理的异常，但是它不能防止程序异常退出。</p>
 </div>
 
 <p>There are, however, some cases where you don’t need to
 handle exceptions on a worker thread, because the .NET Framework does it for
 you. These are covered in upcoming sections, and are:</p>
+<p>当然，也有一些工作线程的异常不需要用户处理，这些工作由 .NET 框架完成了。下面就有一些，在后续章节中会介绍到：</p>
 
 <ul>
 	<li>
-		<a href="#_Asynchronous_delegates">Asynchronous delegates</a>
+		<a href="#_Asynchronous_delegates">Asynchronous delegates | 异步代理</a>
 	</li>
 	<li>
 		<code>
-			<a href="part3.html#_BackgroundWorker">BackgroundWorker</a>
+			<a href="part3.html#_BackgroundWorker">BackgroundWorker | 背景工作线程？</a>
 		</code>
 	</li>
-	<li>The <a href="part5.html#_The_Parallel_Class">Task Parallel Library</a>
-(conditions apply)</li>
+	<li>The <a href="part5.html#_The_Parallel_Class">Task Parallel Library </a>
+(conditions apply) | 任务并行库（部分情况下适用）</li>
 </ul>
 
 <h1>
