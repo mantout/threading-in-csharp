@@ -1006,7 +1006,7 @@ the pooled threads; we describe this in Chapter 23 of <a href="http://www.albaha
 		  <code>WebClient</code> 类中的某些方法；以及大多数形如 <code>Begin</code><span class="Replaceable">XXX</span>
 		  的方法（<em>异步编程模型</em> 模式)</li>
 		<li>PLINQ</li>
-		<li class="ch">PLINQ</li>
+		<li class="ch">并行 LINQ</li>
 	</ul>
 </div>
 
@@ -1044,7 +1044,7 @@ on a pooled thread.</p>
 thread via the property <code>Thread.CurrentThread.IsThreadPoolThread</code>.</p>
 <p class="ch">根据 <code>Thread.CurrentThread.IsThreadPoolThread</code> 属性可以判断当前线程是否为池线程。</p>
 <h2>
-	<a name="_Entering_the_Thread_Pool_via_TPL">Entering the Thread Pool via TPL | 通过 TPL 进入线程池</a>
+	<a name="_Entering_the_Thread_Pool_via_TPL">Entering the Thread Pool via TPL | 通过任务并行库(TPL)访问线程池</a>
 </h2>
 
 <p>You can enter the thread pool easily using the <code><a href="part5.html#_Task_Parallelism">Task</a></code> classes in the Task
@@ -1054,13 +1054,17 @@ nongeneric <code>Task</code> class a replacement for <code><a href="#_QueueUserW
 and the generic <code>Task&lt;TResult&gt;</code> a replacement
 for <a href="#_Asynchronous_delegates">asynchronous delegates</a>. The newer
 constructs are faster, more convenient, and more flexible than the old.</p>
+<p class="ch">通过任务并行库(TPL)中的 <code><a href="part5.html#_Task_Parallelism">Task</a></code> 类，你可以轻松地访问线程池。<code>Task</code>
+类是从 4.0 版本引入的。如果对老版本方法熟悉的话，你可以将非泛型的 <code>Task</code> 类看作 <code><a href="#_QueueUserWorkItem">ThreadPool.QueueUserWorkItem</a></code>
+的替代，非泛型的 <code>Task&lt;TResult&gt;</code> 类看作是<a href="#_Asynchronous_delegates">异步代理</a>机制的替代。</p>
 
 <p>To use the nongeneric <code>Task</code>
 class, call <code>Task.Factory.StartNew</code>, passing in a
 delegate of the target method:</p>
+<p class="ch">调用 <code>Task.Factory.StartNew</code> 方法，并传入一个目标方法的代理，即可使用非泛型的 <code>Task</code> 类。</p>
 
 <pre class="sh_csharp">
-static void Main()    // The Task class is in <b>System.Threading.Tasks</b>
+static void Main()    // The Task class is in <b>System.Threading.Tasks</b> | Task 类在 <b>System.Threading.Tasks</b> 命名空间下
 {
   Task.Factory.StartNew (Go);
 }
@@ -1075,31 +1079,41 @@ static void Go()
 	<code>Task.Factory.StartNew</code> returns a
 <code>Task</code> object, which you can then use to monitor the
 task — for instance, you can wait for it to complete by calling its <code><a href="part5.html#_Waiting_on_Tasks">Wait</a></code> method.</p>
+<p class="ch"><code>Task.Factory.StartNew</code> 方法返回一个 <code>Task</code> 对象，你可以使用这个对象来管理任务，比方说，调用 <code><a href="part5.html#_Waiting_on_Tasks">Wait</a></code> 方法等待任务完成。</p>
 
-<p class="note">Any unhandled exceptions are conveniently rethrown onto the
+<div class="note"><p>Any unhandled exceptions are conveniently rethrown onto the
 host thread when you call a task's <code><a href="part5.html#_Waiting_on_Tasks">Wait method</a></code>.
 (If you don’t call <code>Wait</code> and instead abandon the task, an
 unhandled exception will shut down the process <a href="#_Exception_Handling">as
 with an ordinary thread</a>.)</p>
+<p class="ch">调用<code><a href="part5.html#_Waiting_on_Tasks">Wait</a></code> 方法后，未被处理的异常会再次抛出，让宿主线程来处理。没有调用
+<code>Wait</code> 方法，则未处理的异常会跟没有发生异常一样，结束进程。</p>
+</div>
 
 <p>The generic <code>Task&lt;TResult&gt;</code>
 class is a subclass of the nongeneric <code>Task</code>. It lets
 you get a return value back from the task after it finishes executing. In the
 following example, we download a web page using <code>Task&lt;TResult&gt;</code>:</p>
+<p class="ch">泛型类 <code>Task&lt;TResult&gt;</code> 是 <code>Task</code> 类的子类，在任务执行完成后它会返回一个值。下面这个示例，我们使用
+<code>Task&lt;TResult&gt;</code> 下载一个网页：</p>
 
 <pre class="sh_csharp">
 static void Main()
 {
   // Start the task executing:
+  // 开始执行任务：
   Task&lt;string&gt; task = Task.Factory.StartNew<b>&lt;string&gt;</b>
     ( () =&gt; DownloadString ("http://www.linqpad.net") );
  
   // We can do other work here and it will execute in parallel:
+  // 在这里我们可以并行地处理其他事情：
   RunSomeOtherMethod();
  
   // When we need the task's return value, we query its Result property:
   // If it's still executing, the current thread will now block (wait)
   // until the task finishes:
+  // 需要任务的返回值的话，我们可以检查 Result 属性：
+  // 如果任务还在执行中，则当前线程被阻塞(wait)，只到任务执行完成。
   string result = <b>task.Result</b>;
 }
  
@@ -1113,19 +1127,23 @@ static string DownloadString (string uri)
 <p>(The <code>&lt;string&gt;</code> type
 argument highlighted is for clarity: it would be <em>inferred</em> if we
 omitted it.)</p>
+<p class="ch">（高亮显示类型参数 <code>&lt;string&gt;</code> 是出于清晰考虑，也可以省略掉类型参数。）</p>
 
 <p>Any unhandled exceptions are automatically rethrown when
 you query the task's <code>Result</code> property, wrapped in an <code><a href="part5.html#_Working_with_AggregateException">AggregateException</a></code>.
 However, if you fail to query its <code>Result</code> property
 (and don’t call <code>Wait</code>) any unhandled exception will
 take the process down. </p>
+<p class="ch">查询任务的 <code>Result</code> 属性时，未被处理的异常会包装成 <code>AggregateException</code> 后重新抛出。如果没有调用 <code>Wait</code>
+方法，而查询 <code>Result</code> 属性失败，则未处理的异常会导致进程退出。</p>
 
 <p>The Task Parallel Library has many more features, and is
 particularly well suited to leveraging multicore processors. We’ll resume our
 discussion of TPL <a href="part5.html#_Task_Parallelism">in Part 5</a>. </p>
+<p class="ch">任务并行库(TPL)具有很多功能，特别适合于处理多核处理器架构下的多线程问题，我们将会在 <a href="part5.html#_Task_Parallelism">第 5 部分</a> 继续讨论这个话题。</p>
 
 <h2>
-	<a name="_Entering_the_Thread_Pool_Without_TPL">Entering the Thread Pool Without TPL | 不通过 TPL 进入线程池</a>
+	<a name="_Entering_the_Thread_Pool_Without_TPL">Entering the Thread Pool Without TPL | 不通过任务并行库(TPL)访问线程池</a>
 </h2>
 
 <p>You can't use the Task Parallel Library if you're
